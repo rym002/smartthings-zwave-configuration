@@ -1,0 +1,9 @@
+{
+    "pages.main.name": "Z-Wave Configuration",
+    "pages.main.sections.zwaveDevice.name": "Select a device to configure",
+    "pages.main.settings.selectedZwaveDevice.name": "Configure Device",
+    "pages.deviceInfo.name": "ZWave Device Info",
+    "pages.deviceInfo.sections.zwaveCapabilities.name": "Capabilitites",
+    "pages.deviceInfo.settings.test.name": "Test Text",
+    "Tap to set": "Tap to set"
+}

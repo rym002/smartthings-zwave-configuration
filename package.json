@@ -1,0 +1,14 @@
+{
+    "name": "lambda-build",
+    "description": "Build lambda components",
+    "version": "1.0.0",
+    "scripts": {
+        "build:layers": "cd ./layers && npm run build",
+        "build:functions": "cd ./functions && npm run build",
+        "install:functions": "cd ./functions && npm install",
+        "build": "npm run build:layers && npm run build:functions",
+        "clean:layers": "cd ./layers && npm run clean",
+        "clean:functions": "cd ./functions && npm run clean",
+        "clean": "npm run clean:layers && npm run clean:functions"
+    }
+}

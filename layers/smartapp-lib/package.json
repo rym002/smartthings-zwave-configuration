@@ -1,0 +1,32 @@
+{
+  "name": "smartapp-lib",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "config": {
+    "layer": {
+      "root": "./layer-dist",
+      "dist": "./layer-dist/dist"
+    }
+  },
+  "scripts": {
+    "clean": "rimraf dist && rimraf deploy && rimraf $npm_package_config_layer_root",
+    "build": "echo 'No Build Step'",
+    "pretest": "npm run clean",
+    "layer-package": "mkdirp $npm_package_config_layer_dist && move-file $npm_package_name-$npm_package_version.tgz $npm_package_config_layer_dist/$npm_package_name-$npm_package_version.tgz",
+    "layer-build": "cd $npm_package_config_layer_root && npm init --yes && npm install ./dist/$npm_package_name-$npm_package_version.tgz --production",
+    "postpack": "npm run layer-package && npm run layer-build",
+    "test": "echo 'No Tests'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@smartthings/smartapp": "^2.5.3"
+  },
+  "devDependencies": {
+    "mkdirp": "^1.0.4",
+    "move-file-cli": "^2.0.0",
+    "rimraf": "^3.0.2"
+  }
+}

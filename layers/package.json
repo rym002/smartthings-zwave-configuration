@@ -1,0 +1,11 @@
+{
+    "name": "lambda-build-layers",
+    "description": "Build lambda layers",
+    "version": "1.0.0",
+    "scripts": {
+        "clean:smartapp-lib":"cd ./smartapp-lib && npm run clean",
+        "smartapp-lib":"cd ./smartapp-lib && npm install-test && npm pack",
+        "build":"npm run smartapp-lib",
+        "clean":"npm run clean:smartapp-lib"
+    }
+}

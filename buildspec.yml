@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+  pre_build:
+    commands:
+      - npm config set unsafe-perm true
+  build:
+    commands:
+      - npm run build
+      - sam build
+  post_build:
+    commands:
+      - sam package --s3-bucket $S3BUCKET --s3-prefix $S3PREFIX --output-template-file packaged.yml
+artifacts:
+  type: zip
+  files:
+    - template.yml
+    - packaged.yml

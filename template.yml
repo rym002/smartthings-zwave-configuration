@@ -1,0 +1,82 @@
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'ZWave-Configuration AWS Stack'
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: zwave-configuration
+    Description: Z-Wave Configuration application
+    Author: Ray Munian
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: LICENSE.txt
+    ReadmeUrl: README.md
+    Labels: ['tests']
+    HomePageUrl: https://github.com/rym002/smartthings-zwave-configuration
+    SemanticVersion: 0.0.1
+    SourceCodeUrl: https://github.com/rym002/smartthings-zwave-configuration
+Parameters:
+  STPrincipalIdSmartApp:
+    Description: Alexa Video Skill Id
+    Type: String
+    Default: '906037444270'
+  STPrincipalIdSchema:
+    Description: Alexa Video Skill Id
+    Type: String
+    Default: '148790070172'
+Outputs:
+  ZWaveConfigurationId:
+    Description: ID of the ZWaveConfiguration
+    Value: !GetAtt ZWaveConfiguration.Arn
+Resources:
+  ZWaveConfiguration:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      CodeUri: functions/zwave-configuration/
+      Handler: dist/index.handler
+      Runtime: nodejs14.x
+      FunctionName: !Sub ${AWS::StackName}-ZWaveConfiguration
+      Description: 'ZWaveConfiguration Smartapp'
+      Timeout: 50
+      Role: !GetAtt ZWaveConfigurationRole.Arn
+      Layers:
+        - !Ref SmartAppLibLayer
+  SmartAppLibLayer:
+    Type: 'AWS::Serverless::LayerVersion'
+    Properties:
+      ContentUri: layers/smartapp-lib/layer-dist
+      LayerName: !Sub ${AWS::StackName}-SmartAppLibLayer
+      CompatibleRuntimes:
+        - nodejs14.x
+      Description: Common Code across vestibule functions
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: nodejs14.x
+  ZWaveConfigurationInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt ZWaveConfiguration.Arn
+      Action: lambda:InvokeFunction
+      Principal: !Ref STPrincipalIdSmartApp
+  ZWaveConfigurationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ZWaveConfigurationRole
+      Path: !Sub /${AWS::StackName}/
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+  ZWaveConfigurationLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: 
+        !Sub
+        - /aws/lambda/${FunctionName}
+        - { FunctionName: !Select [6, !Split [ ":", !GetAtt ZWaveConfiguration.Arn]] }
+      RetentionInDays: 7

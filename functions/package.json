@@ -1,0 +1,14 @@
+{
+    "name": "lambda-build-functions",
+    "description": "Build lambda functions",
+    "version": "1.0.0",
+    "scripts": {
+        "test:zwave-configuration": "cd ./zwave-configuration && npm install-test",
+        "build:zwave-configuration": "cd ./zwave-configuration && npm run build",
+        "clean:zwave-configuration": "cd ./zwave-configuration && npm run clean",
+        "build:all": "npm run build:zwave-configuration",
+        "test:all": "npm run test:zwave-configuration",
+        "build": "npm run test:all && npm run build:all",
+        "clean": "npm run clean:zwave-configuration"
+    }
+}

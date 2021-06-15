@@ -14,11 +14,11 @@ Metadata:
     SourceCodeUrl: https://github.com/rym002/smartthings-zwave-configuration
 Parameters:
   STPrincipalIdSmartApp:
-    Description: Alexa Video Skill Id
+    Description: SmartThings smart app AWS Account id
     Type: String
     Default: '906037444270'
   STPrincipalIdSchema:
-    Description: Alexa Video Skill Id
+    Description: SmartThings schema AWS account id
     Type: String
     Default: '148790070172'
 Outputs:
@@ -38,6 +38,9 @@ Resources:
       Role: !GetAtt ZWaveConfigurationRole.Arn
       Layers:
         - !Ref SmartAppLibLayer
+      Environment:
+        Variables:
+          context_store_table: !Select [1, !Split [ "/", !GetAtt SmartThingsContextStore.Arn]]
   SmartAppLibLayer:
     Type: 'AWS::Serverless::LayerVersion'
     Properties:
@@ -61,6 +64,7 @@ Resources:
       RoleName: ZWaveConfigurationRole
       Path: !Sub /${AWS::StackName}/
       ManagedPolicyArns:
+        - !Ref LambdaDefaultPolicy
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -80,3 +84,44 @@ Resources:
         - /aws/lambda/${FunctionName}
         - { FunctionName: !Select [6, !Split [ ":", !GetAtt ZWaveConfiguration.Arn]] }
       RetentionInDays: 7
+  SmartThingsContextStore:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub ${AWS::StackName}-ContextStore
+      AttributeDefinitions:
+        -
+          AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - 
+          AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  LambdaDefaultPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Path: !Sub /${AWS::StackName}/
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:GetItem
+              - dynamodb:DeleteItem
+            Resource:
+              - !GetAtt SmartThingsContextStore.Arn
+          -
+            Effect: Allow
+            Action: 
+              - ssm:GetParameter
+              - ssm:GetParametersByPath
+            Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/smartthings/dev
+          -
+            Effect: Allow
+            Action: kms:Decrypt
+            Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*

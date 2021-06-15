@@ -1,6 +1,6 @@
 {
   "name": "smartapp-lib",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "config": {
@@ -22,6 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@smartthings/dynamodb-context-store": "^2.1.0",
     "@smartthings/smartapp": "^2.5.3"
   },
   "devDependencies": {

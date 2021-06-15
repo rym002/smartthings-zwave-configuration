@@ -4,3 +4,4 @@ dist/
 .aws-sam/
 artifacts.zip
 .vscode/
+layer-dist/

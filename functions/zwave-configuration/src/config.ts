@@ -5,7 +5,8 @@ const ENV = process.env['ENV'] || 'dev';
 
 interface AppClientConfig {
     clientId: string,
-    clientSecret: string
+    clientSecret: string,
+    appId: string,
     [key: string]: string
 }
 let _appClientConfig: AppClientConfig | undefined
@@ -19,7 +20,8 @@ async function appClientConfig(): Promise<AppClientConfig> {
         }).promise()
         const config: AppClientConfig = {
             clientId: '',
-            clientSecret: ''
+            clientSecret: '',
+            appId: ''
         }
         if (parameters.Parameters) {
             parameters.Parameters.map(parameter => {

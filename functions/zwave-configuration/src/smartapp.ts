@@ -1,4 +1,4 @@
-import { PermissionsEnum, SmartApp } from '@smartthings/smartapp'
+import { SmartApp } from '@smartthings/smartapp'
 import appConfig from './config'
 const DynamoDBContextStore = require('@smartthings/dynamodb-context-store')
 
@@ -13,6 +13,8 @@ async function createSmartApp(): Promise<SmartApp> {
             .configureI18n()
             .clientId(config.clientId)
             .clientSecret(config.clientSecret)
+            .appId(config.appId)
+            .firstPageId('main')
             .contextStore(
                 new DynamoDBContextStore({
                     autoCreate: false,
@@ -20,8 +22,8 @@ async function createSmartApp(): Promise<SmartApp> {
                     table: {
                         name: process.env.context_store_table
                     }
-                })
-            ).page('main', async (context, page, configData): Promise<void> => {
+                }))
+            .page('main', async (context, page, configData): Promise<void> => {
                 page.section('zwaveDevice', section => {
                     section
                         .deviceSetting('selectedZwaveDevice')
@@ -36,7 +38,8 @@ async function createSmartApp(): Promise<SmartApp> {
                 } else {
                     page.complete(true)
                 }
-            }).page('deviceInfo', async (context, page, configData) => {
+            })
+            .page('deviceInfo', async (context, page, configData) => {
                 const authContext = await context.retrieveTokens()
                 const deviceContext = await authContext.configDevices('selectedZwaveDevice')
                 deviceContext[0].name
@@ -46,8 +49,7 @@ async function createSmartApp(): Promise<SmartApp> {
                         .defaultValue(deviceContext[0].name)
                 })
                 page.complete(true)
-
-            }).firstPageId('main')
+            })
     }
     return smartApp
 }

@@ -13,20 +13,22 @@ async function createSmartApp(): Promise<SmartApp> {
             .configureI18n()
             .clientId(config.clientId)
             .clientSecret(config.clientSecret)
-            .contextStore(new DynamoDBContextStore({
-                autoCreate: false,
-                AWSRegion: process.env.AWS_REGION,
-                table: {
-                    name: process.env.context_store_table
-                }
-            })).page('main', async (context, page, configData): Promise<void> => {
+            .contextStore(
+                new DynamoDBContextStore({
+                    autoCreate: false,
+                    AWSRegion: process.env.AWS_REGION,
+                    table: {
+                        name: process.env.context_store_table
+                    }
+                })
+            ).page('main', async (context, page, configData): Promise<void> => {
                 page.section('zwaveDevice', section => {
                     section
                         .deviceSetting('selectedZwaveDevice')
                         .capability('benchlocket65304.zwaveConfiguration')
                         .required(true)
                         .multiple(false)
-                        .permissions([PermissionsEnum.R, PermissionsEnum.X])
+                        .permissions(['r', 'x'])
                 })
                 const authContext = await context.retrieveTokens()
                 if (authContext.isAuthenticated()) {
@@ -45,7 +47,7 @@ async function createSmartApp(): Promise<SmartApp> {
                 })
                 page.complete(true)
 
-            })
+            }).firstPageId('main')
     }
     return smartApp
 }

@@ -118,9 +118,8 @@ Resources:
           -
             Effect: Allow
             Action: 
-              - ssm:GetParameters
               - ssm:GetParametersByPath
-            Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/smartthings/dev/zwaveConfiguration/*
+            Resource: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/smartthings/dev/zwaveConfiguration
           -
             Effect: Allow
             Action: kms:Decrypt

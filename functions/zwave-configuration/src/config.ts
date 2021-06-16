@@ -13,11 +13,8 @@ let _appClientConfig: AppClientConfig | undefined
 async function appClientConfig(): Promise<AppClientConfig> {
     if (!_appClientConfig) {
         const prefix = parameterPrefix()
-        const parameters = await ssm.getParameters({
-            Names: [
-                prefix + 'clientId',
-                prefix + 'clientSecret'
-            ],
+        const parameters = await ssm.getParametersByPath({
+            Path: prefix,
             WithDecryption: true
         }).promise()
         const config: AppClientConfig = {
@@ -32,16 +29,16 @@ async function appClientConfig(): Promise<AppClientConfig> {
                     config[name] = value
                 }
             })
+            _appClientConfig = config
         } else {
-            throw parameters.InvalidParameters
+            throw parameters.$response.error
         }
-        _appClientConfig = config
     }
     return _appClientConfig;
 }
 
 function parameterPrefix(): string {
-    return 'smartthings/' + ENV + '/zwaveConfiguration/'
+    return '/smartthings/' + ENV + '/zwaveConfiguration'
 }
 
 

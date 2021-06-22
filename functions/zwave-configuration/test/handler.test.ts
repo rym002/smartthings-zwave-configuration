@@ -130,6 +130,17 @@ describe('Test Test', () => {
                     })
 
             }
+            const sandbox = getContextSandbox(this)
+            mockAwsWithSpy(sandbox, 'DynamoDB', 'putItem', (params: DynamoDB.PutItemInput): DynamoDB.PutItemOutput => {
+                return {
+                    Attributes: params.Item
+                }
+            })
+            mockAwsWithSpy(sandbox, 'DynamoDB', 'deleteItem', (params: DynamoDB.DeleteItemInput): DynamoDB.DeleteItemOutput => {
+                return {
+                    Attributes: params.Key
+                }
+            })
         })
         afterEach(() => {
             nock.cleanAll()

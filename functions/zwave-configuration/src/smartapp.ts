@@ -1,4 +1,4 @@
-import { SmartApp, SmartAppContext, Page, Section } from '@smartthings/smartapp'
+import { SmartApp, SmartAppContext, Page, Section, ContextStore } from '@smartthings/smartapp'
 import { InstalledAppConfiguration, ConfigValueType } from '@smartthings/core-sdk'
 import appConfig from './config'
 import { AssociationGroup, CommandClass, ConfigurationParameter, ZwaveDevice, ZWaveInfo } from './deviceInfo'
@@ -256,7 +256,7 @@ class SmartAppCreator {
         })
     }
 
-    contextStore(): any {
+    contextStore(): ContextStore {
         return new DynamoDBContextStore({
             autoCreate: false,
             AWSRegion: process.env.AWS_REGION,
@@ -301,6 +301,7 @@ class SmartAppCreator {
         if (!this.smartApp) {
             const smartApp = await this.clientConfig()
             this.smartApp = this.pages.configurePages(smartApp)
+                .contextStore(this.contextStore())
                 .enableEventLogging()
                 .configureI18n()
                 .updated(this.updatedHandler.bind(this))

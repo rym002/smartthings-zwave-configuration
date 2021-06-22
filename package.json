@@ -5,7 +5,7 @@
     "scripts": {
         "build:layers": "cd ./layers && npm run build",
         "build:functions": "cd ./functions && npm run build",
-        "build:mocks": "cd ./mocks && npm install",
+        "build:mocks": "cd ./mocks && npm install && npm run build",
         "install:functions": "cd ./functions && npm install",
         "build": "npm run build:mocks && npm run build:layers && npm run build:functions",
         "clean:layers": "cd ./layers && npm run clean",

@@ -1,0 +1,34 @@
+{
+    "statusCode": 200,
+    "configurationData": {
+        "page": {
+            "name": "Z-Wave Configuration",
+            "complete": true,
+            "pageId": "main",
+            "nextPageId": null,
+            "previousPageId": null,
+            "sections": [
+                {
+                    "name": "Select a device to configure",
+                    "settings": [
+                        {
+                            "id": "selectedZwaveDevice",
+                            "required": true,
+                            "type": "DEVICE",
+                            "name": "Configure Device",
+                            "description": "Tap to set",
+                            "multiple": false,
+                            "capabilities": [
+                                "benchlocket65304.zwaveConfiguration"
+                            ],
+                            "permissions": [
+                                "r",
+                                "x"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

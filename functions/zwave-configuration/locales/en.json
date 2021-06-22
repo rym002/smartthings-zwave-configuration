@@ -1,9 +1,16 @@
 {
     "pages.main.name": "Z-Wave Configuration",
     "pages.main.sections.zwaveDevice.name": "Select a device to configure",
+    "pages.main.sections.missingManufacturer.name": "Manufacture not found",
+    "pages.main.settings.manufacturerError.name": "Unable to find manufacturer from device",
+    "pages.main.settings.manufacturerError.description": "Requesting manufacturer refresh from device",
     "pages.main.settings.selectedZwaveDevice.name": "Configure Device",
-    "pages.deviceInfo.name": "ZWave Device Info",
-    "pages.deviceInfo.sections.zwaveCapabilities.name": "Capabilitites",
-    "pages.deviceInfo.settings.test.name": "Test Text",
-    "Tap to set": "Tap to set"
+    "Tap to set": "Tap to set",
+    "pages.main.sections.summaryInfo.name": "Device Summary",
+    "pages.main.sections.SupportedCommandClasses.name": "Supported Command Classes",
+    "pages.main.sections.ControlledCommandClasses.name": "Controlled Command Classes",
+    "pages.main.sections.S2Classes.name": "S2 Classes",
+    "pages.main.sections.AssociationGroups.name": "Association Groups",
+    "pages.main.sections.ConfigurationParameters.name": "Configuration Parameters",
+    "pages.main.sections.Features.name": "Features"
 }

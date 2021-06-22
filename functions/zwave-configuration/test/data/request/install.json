@@ -1,0 +1,40 @@
+{
+    "lifecycle": "INSTALL",
+    "executionId": "00000000-0000-0000-0000-000000000000",
+    "appId": "myAppId",
+    "locale": "en",
+    "version": "0.1.0",
+    "client": {
+        "os": "android",
+        "version": "1.7.67.29",
+        "language": "en",
+        "displayMode": "LIGHT",
+        "timeZoneOffset": "",
+        "supportedTemplates": [],
+        "samsungAccountId": ""
+    },
+    "installData": {
+        "authToken": "authToken",
+        "refreshToken": "refreshToken",
+        "installedApp": {
+            "installedAppId": "myInstalledAppId",
+            "locationId": "myLocationId",
+            "config": {
+                "selectedZwaveDevice": [
+                    {
+                        "valueType": "DEVICE",
+                        "deviceConfig": {
+                            "deviceId": "myDeviceId",
+                            "componentId": "main"
+                        }
+                    }
+                ]
+            },
+            "permissions": [
+                "r:devices:00000000-0000-0000-0000-000000000000",
+                "x:devices:00000000-0000-0000-0000-000000000000"
+            ]
+        }
+    },
+    "settings": {}
+}

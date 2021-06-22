@@ -1,6 +1,5 @@
 import { SSM } from 'aws-sdk'
 
-const ssm = new SSM()
 const ENV = process.env['ENV'] || 'dev';
 
 interface AppClientConfig {
@@ -14,6 +13,7 @@ let _appClientConfig: AppClientConfig | undefined
 async function appClientConfig(): Promise<AppClientConfig> {
     if (!_appClientConfig) {
         const prefix = parameterPrefix()
+        const ssm = new SSM()
         const parameters = await ssm.getParametersByPath({
             Path: prefix,
             WithDecryption: true
@@ -26,7 +26,7 @@ async function appClientConfig(): Promise<AppClientConfig> {
         if (parameters.Parameters) {
             parameters.Parameters.map(parameter => {
                 if (parameter.Name && parameter.Value) {
-                    const name = parameter.Name.substring(prefix.length)
+                    const name = parameter.Name.substring(prefix.length + 1)
                     const value = parameter.Value
                     config[name] = value
                 }
@@ -44,4 +44,4 @@ function parameterPrefix(): string {
 }
 
 
-export default appClientConfig()
+export default appClientConfig

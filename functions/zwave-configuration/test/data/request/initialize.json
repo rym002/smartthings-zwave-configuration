@@ -1,0 +1,25 @@
+{
+    "lifecycle": "CONFIGURATION",
+    "executionId": "00000000-0000-0000-0000-000000000000",
+    "appId": "00000000-0000-0000-0000-000000000000",
+    "locale": "en",
+    "version": "0.1.0",
+    "client": {
+        "os": "android",
+        "version": "1.7.67.29",
+        "language": "en-US",
+        "displayMode": "LIGHT",
+        "timeZoneOffset": "",
+        "supportedTemplates": [],
+        "samsungAccountId": ""
+    },
+    "configurationData": {
+        "installedAppId": "00000000-0000-0000-0000-000000000000",
+        "phase": "INITIALIZE",
+        "pageId": "",
+        "previousPageId": "",
+        "config": {},
+        "isResubmit": true
+    },
+    "settings": {}
+}

@@ -1,0 +1,118 @@
+{
+    "statusCode": 200,
+    "configurationData": {
+        "page": {
+            "name": "Z-Wave Configuration",
+            "complete": true,
+            "pageId": "main",
+            "nextPageId": null,
+            "previousPageId": null,
+            "sections": [
+                {
+                    "name": "Association Groups",
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "1",
+                            "type": "PAGE",
+                            "name": "",
+                            "description": "Association Group 1 supports Lifeline, Multilevel Switch Report",
+                            "page": "associationGroup1"
+                        },
+                        {
+                            "id": "2",
+                            "type": "PAGE",
+                            "name": "",
+                            "description": "Association Group 2 supports Basic Set and is controlled by pressing the ON or OFF button with the local load",
+                            "page": "associationGroup2"
+                        },
+                        {
+                            "id": "3",
+                            "type": "PAGE",
+                            "name": "",
+                            "description": "Association Group 3 supports Basic Set and is controlled by double pressing the ON or OFF button",
+                            "page": "associationGroup3"
+                        }
+                    ]
+                },
+                {
+                    "name": "Configuration Parameters",
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "parameter16",
+                            "type": "PAGE",
+                            "name": "Enable/Disable Switch Mode",
+                            "description": "",
+                            "page": "parameter16"
+                        }
+                    ]
+                },
+                {
+                    "name": "Device Summary",
+                    "settings": [
+                        {
+                            "id": "name",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "In-Wall Smart Dimmer",
+                            "description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!"
+                        }
+                    ]
+                },
+                {
+                    "name": "Supported Command Classes",
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "COMMAND_CLASS_APPLICATION_STATUS",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "COMMAND_CLASS_APPLICATION_STATUS",
+                            "description": "Application Status"
+                        }
+                    ]
+                },
+                {
+                    "name": "Controlled Command Classes",
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "COMMAND_CLASS_BASIC_V2",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "COMMAND_CLASS_BASIC_V2",
+                            "description": "Basic V2"
+                        }
+                    ]
+                },
+                {
+                    "name": "S2 Classes",
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "S2_AUTHENTICATED",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "S2_AUTHENTICATED",
+                            "description": "S2 Authenticated"
+                        }
+                    ]
+                },
+                {
+                    "name": "Features",
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "22",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Firmware Updatable",
+                            "description": "Indicates whether the firmware can be updated and whether it is done by the consumer or a technician."
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

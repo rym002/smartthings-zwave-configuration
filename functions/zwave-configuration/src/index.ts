@@ -1,10 +1,8 @@
 import { Handler } from "aws-lambda";
-import createSmartApp from './smartapp'
+import { smartAppCreator } from './smartapp'
 
 
-export const handler: Handler<any, any> = (event, context, callback) => {
-    createSmartApp
-        .then(smartapp => {
-            smartapp.handleLambdaCallback(event, context, callback)
-        })
+export const handler: Handler<any, any> = async (event, context, callback) => {
+    const smartapp = await smartAppCreator.createSmartApp()
+    return smartapp.handleLambdaCallback(event, context, callback)
 }

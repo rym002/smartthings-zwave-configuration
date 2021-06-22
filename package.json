@@ -5,10 +5,12 @@
     "scripts": {
         "build:layers": "cd ./layers && npm run build",
         "build:functions": "cd ./functions && npm run build",
+        "build:mocks": "cd ./mocks && npm install",
         "install:functions": "cd ./functions && npm install",
-        "build": "npm run build:layers && npm run build:functions",
+        "build": "npm run build:mocks && npm run build:layers && npm run build:functions",
         "clean:layers": "cd ./layers && npm run clean",
         "clean:functions": "cd ./functions && npm run clean",
-        "clean": "npm run clean:layers && npm run clean:functions"
+        "clean:mocks": "cd ./mocks && npm run clean",
+        "clean": "npm run clean:mocks && npm run clean:layers && npm run clean:functions"
     }
 }

@@ -23,16 +23,23 @@
     "url": "https://github.com/rym002/smartthings-zwaveConfiguration/issues"
   },
   "homepage": "https://github.com/rym002/smartthings-zwaveConfiguration#readme",
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.21.1",
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.77",
     "@types/chai": "^4.2.18",
+    "@types/lodash": "^4.14.170",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.12.1",
+    "aws-sdk-mock": "^5.2.0",
     "chai": "^4.3.4",
     "mocha": "^8.4.0",
+    "nock": "^13.1.0",
     "rimraf": "^3.0.2",
     "smartapp-lib": "file:../../layers/smartapp-lib/layer-dist/dist/smartapp-lib-1.0.1.tgz",
+    "st-mocha-mocks": "file:../../mocks",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.2"
   }

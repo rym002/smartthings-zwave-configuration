@@ -1,4 +1,7 @@
 {
+    "file": [
+        "hooks/mochaHooks.ts"
+    ],
     "extension": "ts",
     "recursive": true,
     "exit": true,

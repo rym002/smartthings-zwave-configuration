@@ -1,0 +1,12 @@
+{
+    "statusCode": 200,
+    "configurationData": {
+        "initialize": {
+            "id": "myAppId",
+            "firstPageId": "main",
+            "permissions": [],
+            "disableCustomDisplayName": false,
+            "disableRemoveApp": false
+        }
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "lifecycle": "UNINSTALL",
+    "executionId": "00000000-0000-0000-0000-000000000000",
+    "appId": "myAppId",
+    "locale": "en-US",
+    "version": "0.1.0",
+    "uninstallData": {
+        "installedApp": {
+            "installedAppId": "myInstalledAppId",
+            "locationId": "myLocationId",
+            "config": {},
+            "permissions": []
+        }
+    },
+    "settings": {}
+}

@@ -1,0 +1,103 @@
+{
+    "id": "benchlocket65304.zwaveConfiguration",
+    "version": 1,
+    "status": "proposed",
+    "name": "Zwave Configuration",
+    "attributes": {
+        "currentConfigurations": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "object",
+                        "patternProperties": {
+                            "^[0-9]{1,3}$": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": []
+            },
+            "enumCommands": []
+        },
+        "manufacturer": {
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "object",
+                        "properties": {
+                            "manufacturerId": {
+                                "type": "integer"
+                            },
+                            "productTypeId": {
+                                "type": "integer"
+                            },
+                            "productId": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "additionalProperties": false,
+                "required": []
+            },
+            "enumCommands": []
+        }
+    },
+    "commands": {
+        "refreshManufacturer": {
+            "name": "refreshManufacturer",
+            "arguments": []
+        },
+        "supportedConfigurations": {
+            "name": "supportedConfigurations",
+            "arguments": [
+                {
+                    "name": "parameters",
+                    "optional": false,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            ]
+        },
+        "updateConfiguration": {
+            "name": "updateConfiguration",
+            "arguments": [
+                {
+                    "name": "parameterNumber",
+                    "optional": false,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "name": "configurationValue",
+                    "optional": false,
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                {
+                    "name": "defaultValue",
+                    "optional": false,
+                    "schema": {
+                        "type": "boolean"
+                    }
+                }
+            ]
+        }
+    }
+}

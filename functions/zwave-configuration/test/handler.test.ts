@@ -75,6 +75,21 @@ describe('Test Test', () => {
                 const data = await import(`./data/nock/products/3600.json`)
                 return data
             })
+        mockAwsWithSpy(sandbox, 'DynamoDB', 'putItem', (params: DynamoDB.PutItemInput): DynamoDB.PutItemOutput => {
+            return {
+                Attributes: params.Item
+            }
+        })
+        mockAwsWithSpy(sandbox, 'DynamoDB', 'deleteItem', (params: DynamoDB.DeleteItemInput): DynamoDB.DeleteItemOutput => {
+            return {
+                Attributes: params.Key
+            }
+        })
+        mockAwsWithSpy(sandbox, 'DynamoDB', 'updateItem', (params: DynamoDB.UpdateItemInput): DynamoDB.UpdateItemOutput => {
+            return {
+                Attributes: params.Key
+            }
+        })
 
     })
     context('Pages', () => {
@@ -131,16 +146,6 @@ describe('Test Test', () => {
 
             }
             const sandbox = getContextSandbox(this)
-            mockAwsWithSpy(sandbox, 'DynamoDB', 'putItem', (params: DynamoDB.PutItemInput): DynamoDB.PutItemOutput => {
-                return {
-                    Attributes: params.Item
-                }
-            })
-            mockAwsWithSpy(sandbox, 'DynamoDB', 'deleteItem', (params: DynamoDB.DeleteItemInput): DynamoDB.DeleteItemOutput => {
-                return {
-                    Attributes: params.Key
-                }
-            })
         })
         afterEach(() => {
             nock.cleanAll()

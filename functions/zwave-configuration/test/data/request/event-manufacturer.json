@@ -1,0 +1,55 @@
+{
+    "lifecycle": "EVENT",
+    "executionId": "myExecutionid",
+    "appId": "myAppId",
+    "locale": "en-US",
+    "version": "0.1.0",
+    "eventData": {
+        "authToken": "myAuthToken",
+        "installedApp": {
+            "installedAppId": "myInstalledAppId",
+            "locationId": "myLocationId",
+            "config": {
+                "selectedZwaveDevice": [
+                    {
+                        "valueType": "DEVICE",
+                        "deviceConfig": {
+                            "deviceId": "myDeviceId",
+                            "componentId": "main"
+                        }
+                    }
+                ]
+            },
+            "permissions": [
+                "r:devices:myDeviceId",
+                "x:devices:myDeviceId"
+            ]
+        },
+        "events": [
+            {
+                "eventTime": "2021-06-22T03:14:00Z",
+                "eventType": "DEVICE_EVENT",
+                "deviceEvent": {
+                    "eventId": "myEventId",
+                    "locationId": "myLocationId",
+                    "ownerId": "myLocationId",
+                    "ownerType": "LOCATION",
+                    "deviceId": "myDeviceId",
+                    "componentId": "main",
+                    "capability": "benchlocket65304.zwaveConfiguration",
+                    "attribute": "manufacturer",
+                    "value": {
+                        "productTypeId": 18756,
+                        "manufacturerId": 57,
+                        "productId": 12853
+                    },
+                    "valueType": "string",
+                    "stateChange": true,
+                    "data": {},
+                    "subscriptionName": "manufacturerEvent_0"
+                }
+            }
+        ]
+    },
+    "settings": {}
+}

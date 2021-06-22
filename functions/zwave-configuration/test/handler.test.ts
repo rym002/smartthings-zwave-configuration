@@ -172,6 +172,11 @@ describe('Test Test', () => {
             await testRequest('uninstall')
         })
     })
+    context('Event', () => {
+        it('EVENT manufacturer', async () => {
+            await testRequest('event-manufacturer')
+        })
+    })
 })
 
 async function testRequest(fileName: string): Promise<void> {

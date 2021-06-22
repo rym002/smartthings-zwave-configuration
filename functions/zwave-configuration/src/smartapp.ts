@@ -280,7 +280,7 @@ class SmartAppCreator {
         context: SmartAppContext,
         eventData: AppEvent.DeviceEvent,
         eventTime: string) {
-        const manufacturer = <Manufacturer>eventData.data
+        const manufacturer = <Manufacturer>eventData.value
         const manufacturerHex = ZWaveConfigurationCapability.toManufacturerHex(manufacturer)
         try {
             const zwaveProductId = await ZwaveDevice.zwaveAllianceProductId(manufacturerHex)

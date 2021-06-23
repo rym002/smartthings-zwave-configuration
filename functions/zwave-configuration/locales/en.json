@@ -7,6 +7,7 @@
     "pages.main.settings.selectedZwaveDevice.name": "Configure Device",
     "Tap to set": "Tap to set",
     "pages.main.sections.summaryInfo.name": "Device Summary",
+    "pages.main.sections.detailedInfo.name": "Device Detail",
     "pages.main.sections.SupportedCommandClasses.name": "Supported Command Classes",
     "pages.main.sections.ControlledCommandClasses.name": "Controlled Command Classes",
     "pages.main.sections.S2Classes.name": "S2 Classes",

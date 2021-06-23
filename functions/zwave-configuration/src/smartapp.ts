@@ -31,12 +31,24 @@ async function retrieveZwaveCapability(context: SmartAppContext): Promise<ZWaveC
 
 class Pages {
 
-    private summarySection(zwaveInfo: ZWaveInfo, page: Page, device: ZwaveDevice) {
+    private summarySection(zwaveInfo: ZWaveInfo, page: Page) {
         page.section('summaryInfo', section => {
-            section.imageSetting('deviceInfo')
-                .image(device.deviceImage())
+            section.paragraphSetting('device')
+                .name(zwaveInfo.Name)
+                .description(zwaveInfo.Description_Short)
+        })
+    }
+    private detailSection(zwaveInfo: ZWaveInfo, page: Page, device: ZwaveDevice) {
+        page.section('detailedInfo', section => {
+            section.hidden(true)
+            section.hideable(true)
+            section.paragraphSetting('detailName')
                 .name(zwaveInfo.Name)
                 .description(zwaveInfo.Description)
+            section.imageSetting('deviceImage')
+                .image(device.deviceImage())
+                .name(zwaveInfo.Name)
+                .description(zwaveInfo.Name)
         })
     }
     private commandClassSection(page: Page, sectionName: string, commandClasses: CommandClass[]) {
@@ -215,7 +227,8 @@ class Pages {
                     const zwaveProductId = await this.zwaveProductId(configData.installedAppId)
                     const zwDevice = new ZwaveDevice(zwaveProductId)
                     const zwaveInfo = await zwDevice.deviceInfo()
-                    this.summarySection(zwaveInfo, page, zwDevice)
+                    this.summarySection(zwaveInfo, page)
+                    this.detailSection(zwaveInfo, page, zwDevice)
                     this.configurationParametersSection(zwaveInfo, page)
                     this.associationGroupsSection(zwaveInfo, page)
                     this.commandClassesSection(zwaveInfo, page)

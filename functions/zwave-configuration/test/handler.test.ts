@@ -4,6 +4,7 @@ import { ssmMock, FakeContext, getContextSandbox, mockAwsWithSpy } from 'st-moch
 import { expect, assert } from 'chai'
 import { DynamoDB } from 'aws-sdk'
 import * as nock from 'nock'
+import { SinonSpy } from 'st-mocha-mocks/node_modules/@types/sinon'
 
 interface ContextRecord {
     installedAppId: string
@@ -50,17 +51,11 @@ describe('Test Test', () => {
                                     componentId: "main"
                                 }
                             }
-                        ],
-                        zwaveProductId: [
-                            {
-                                valueType: "STRING",
-                                stringConfig: {
-                                    value: "3600"
-                                }
-                            }
                         ]
                     },
-                    state: {}
+                    state: {
+                        zwaveProductId: 3600
+                    }
                 }
                 item = DynamoDB.Converter.marshall(context)
             }
@@ -75,21 +70,24 @@ describe('Test Test', () => {
                 const data = await import(`./data/nock/products/3600.json`)
                 return data
             })
-        mockAwsWithSpy(sandbox, 'DynamoDB', 'putItem', (params: DynamoDB.PutItemInput): DynamoDB.PutItemOutput => {
-            return {
-                Attributes: params.Item
-            }
-        })
-        mockAwsWithSpy(sandbox, 'DynamoDB', 'deleteItem', (params: DynamoDB.DeleteItemInput): DynamoDB.DeleteItemOutput => {
-            return {
-                Attributes: params.Key
-            }
-        })
-        mockAwsWithSpy(sandbox, 'DynamoDB', 'updateItem', (params: DynamoDB.UpdateItemInput): DynamoDB.UpdateItemOutput => {
-            return {
-                Attributes: params.Key
-            }
-        })
+        if (this.currentTest && this.currentTest.ctx) {
+
+            this.currentTest.ctx.putItemSpy = mockAwsWithSpy(sandbox, 'DynamoDB', 'putItem', (params: DynamoDB.PutItemInput): DynamoDB.PutItemOutput => {
+                return {
+                    Attributes: params.Item
+                }
+            })
+            this.currentTest.ctx.deleteItem = mockAwsWithSpy(sandbox, 'DynamoDB', 'deleteItem', (params: DynamoDB.DeleteItemInput): DynamoDB.DeleteItemOutput => {
+                return {
+                    Attributes: params.Key
+                }
+            })
+            this.currentTest.ctx.updateItem = mockAwsWithSpy(sandbox, 'DynamoDB', 'updateItem', (params: DynamoDB.UpdateItemInput): DynamoDB.UpdateItemOutput => {
+                return {
+                    Attributes: params.Key
+                }
+            })
+        }
 
     })
     context('Pages', () => {
@@ -173,8 +171,15 @@ describe('Test Test', () => {
         })
     })
     context('Event', () => {
-        it('EVENT manufacturer', async () => {
+        it('EVENT manufacturer', async function () {
             await testRequest('event-manufacturer')
+            if (this.test && this.test.ctx) {
+                const updateSpy = <SinonSpy>this.test.ctx.updateItem
+                const sandbox = getContextSandbox(this)
+                sandbox.assert.calledOnce(updateSpy)
+            } else {
+                assert(false, 'Test ctx not found')
+            }
         })
     })
 })

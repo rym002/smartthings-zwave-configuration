@@ -1,155 +1,159 @@
 {
-    "Id": 3600,
-    "Name": "In-Wall Smart Dimmer",
-    "Description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!",
-    "Description_Short": "Honeywell In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. ",
-    "Brand": "Honeywell",
-    "Identifier": "39351/ZW3010",
-    "CertificationNumber": "ZC10-19086695",
-    "OemVersion": "HW: 255 FW: 5.53",
-    "HardwarePlatform": "ZM5202",
-    "ZWaveVersion": "6.81.03",
-    "LibraryType": "Enhanced 232 Slave",
-    "DeviceType": "Light Dimmer Switch",
-    "RoleType": "Always On Slave",
-    "ManufacturerId": "0x0039",
-    "ProductTypeId": "0x4944",
-    "ProductId": "0x3235",
-    "Frequencies": [
-      "U.S. / Canada / Mexico (US)"
-    ],
-    "UserIcon": "0x0600",
-    "InstallerIcon": "0x0604",
-    "ProductUrl": "",
-    "SupportUrl": "",
-    "CertificationApprovedDate": "2019-08-01T23:19:57.065818",
-    "Categories": [
-      "All Lighting Devices",
-      "Dimming Lighting Devices"
-    ],
-    "SupportedCommandClasses": [
-      {
-        "Name": "Application Status",
-        "Identifier": "COMMAND_CLASS_APPLICATION_STATUS"
-      }
-    ],
-    "ControlledCommandClasses": [
-      {
-        "Name": "Basic V2",
-        "Identifier": "COMMAND_CLASS_BASIC_V2"
-      }
-    ],
-    "S2Classes": [
-      {
-        "Name": "S2 Authenticated",
-        "Identifier": "S2_AUTHENTICATED"
-      }
-    ],
-    "AssociationGroups": [
-      {
-        "Description": "Association Group 1 supports Lifeline, Multilevel Switch Report",
-        "GroupNumber": 1,
-        "MaximumNodes": 5,
-        "endpoint_id": 0,
-        "group_name": "",
-        "profile": ""
-      },
-      {
-        "Description": "Association Group 2 supports Basic Set and is controlled by pressing the ON or OFF button with the local load",
-        "GroupNumber": 2,
-        "MaximumNodes": 5,
-        "endpoint_id": 0,
-        "group_name": "",
-        "profile": ""
-      },
-      {
-        "Description": "Association Group 3 supports Basic Set and is controlled by double pressing the ON or OFF button",
-        "GroupNumber": 3,
-        "MaximumNodes": 5,
-        "endpoint_id": 0,
-        "group_name": "",
-        "profile": ""
-      }
-    ],
-    "ConfigurationParameters": [
-      {
-        "Name": "Enable/Disable Switch Mode",
-        "Description": "",
-        "ParameterNumber": 16,
-        "Size": 1,
-        "DefaultValue": 0,
-        "pType": 0,
-        "flagReadOnly": false,
-        "flagReInclude": false,
-        "flagAdvanced": false,
-        "v3plus": false,
-        "minValue": 0,
-        "maxValue": 0,
-        "ConfigurationParameterValues": [
-          {
-            "From": 0,
-            "To": 0,
-            "Description": "Disable",
-            "DescriptionJSONSafe": "Disable"
-          },
-          {
-            "From": 1,
-            "To": 1,
-            "Description": "Enable",
-            "DescriptionJSONSafe": "Enable"
-          }
-        ]
-      }
-    ],
-    "Features": [
-      {
-        "feature_Id": 22,
-        "product_Id": 3600,
-        "option_value_bool": false,
-        "option_value_text": "",
-        "option_value_selections": [
-          "Updatable by Manufacturer"
-        ],
-        "feature_Type": "eSelect_One",
-        "featureName": "Firmware Updatable",
-        "featureDescription": "Indicates whether the firmware can be updated and whether it is done by the consumer or a technician.",
-        "featurePrompt": "Choose one."
-      }
-    ],
-    "Documents": [
-      {
-        "Id": 25741,
-        "product_id": 3600,
-        "Type": 21,
-        "description": "Product Picture",
-        "value": "product_pictures/ZC10-19086695.png",
-        "not_public": false
-      },
-      {
-        "Id": 25742,
-        "product_id": 3600,
-        "Type": 1,
-        "description": "Product or Owner's Manual",
-        "value": "MarketCertificationFiles/3600/39351 Binder.pdf",
-        "not_public": false
-      }
-    ],
-    "Texts": [
-      {
-        "Id": 32918,
-        "product_id": 3600,
-        "Type": 1,
-        "description": "Inclusion",
-        "value": "1. Follow the instructions for your Z-Wave certified controller to add a device to the Z-Wave network.\r\n2. Once the controller is ready to add your device, press and release the top or bottom of the wireless smart dimmer (rocker) to add it in the network.\r\nIf prompted by the controller to enter the S2 security code, refer to the QR code/security number on the back of the box, or the QR code label on the product."
-      }
-    ],
-    "SupportedMultilevelSensors": [],
-    "ControlledMultilevelSensors": [],
-    "SupportedNotificationTypes": [],
-    "ControlledNotificationTypes": [],
-    "SupportedControlledMeterTypes": [],
-    "Supports_NWI": true,
-    "Supports_Explorer": true,
-    "is_FLiRS": false,
-    "Supports_SmartStart": true
-  }
+  "Id": 3600,
+  "Name": "In-Wall Smart Dimmer",
+  "Description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!",
+  "Description_Short": "Honeywell In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. ",
+  "Brand": "Honeywell",
+  "Identifier": "39351/ZW3010",
+  "CertificationNumber": "ZC10-19086695",
+  "OemVersion": "HW: 255 FW: 5.53",
+  "HardwarePlatform": "ZM5202",
+  "ZWaveVersion": "6.81.03",
+  "LibraryType": "Enhanced 232 Slave",
+  "DeviceType": "Light Dimmer Switch",
+  "RoleType": "Always On Slave",
+  "ManufacturerId": "0x0039",
+  "ProductTypeId": "0x4944",
+  "ProductId": "0x3235",
+  "Frequencies": [
+    "U.S. / Canada / Mexico (US)"
+  ],
+  "UserIcon": "0x0600",
+  "InstallerIcon": "0x0604",
+  "ProductUrl": "",
+  "SupportUrl": "",
+  "CertificationApprovedDate": "2019-08-01T23:19:57.065818",
+  "Categories": [
+    "All Lighting Devices",
+    "Dimming Lighting Devices"
+  ],
+  "SupportedCommandClasses": [
+    {
+      "Name": "Application Status",
+      "Identifier": "COMMAND_CLASS_APPLICATION_STATUS"
+    },
+    {
+      "Name": "Basic V2",
+      "Identifier": "COMMAND_CLASS_BASIC_V2"
+    }
+  ],
+  "ControlledCommandClasses": [
+    {
+      "Name": "Basic V2",
+      "Identifier": "COMMAND_CLASS_BASIC_V2"
+    }
+  ],
+  "S2Classes": [
+    {
+      "Name": "S2 Authenticated",
+      "Identifier": "S2_AUTHENTICATED"
+    }
+  ],
+  "AssociationGroups": [
+    {
+      "Description": "Association Group 1 supports Lifeline, Multilevel Switch Report",
+      "GroupNumber": 1,
+      "MaximumNodes": 5,
+      "endpoint_id": 0,
+      "group_name": "",
+      "profile": ""
+    },
+    {
+      "Description": "Association Group 2 supports Basic Set and is controlled by pressing the ON or OFF button with the local load",
+      "GroupNumber": 2,
+      "MaximumNodes": 5,
+      "endpoint_id": 0,
+      "group_name": "",
+      "profile": ""
+    },
+    {
+      "Description": "Association Group 3 supports Basic Set and is controlled by double pressing the ON or OFF button",
+      "GroupNumber": 3,
+      "MaximumNodes": 5,
+      "endpoint_id": 0,
+      "group_name": "",
+      "profile": ""
+    }
+  ],
+  "ConfigurationParameters": [
+    {
+      "Name": "Enable/Disable Switch Mode",
+      "Description": "",
+      "ParameterNumber": 16,
+      "Size": 1,
+      "DefaultValue": 0,
+      "pType": 0,
+      "flagReadOnly": false,
+      "flagReInclude": false,
+      "flagAdvanced": false,
+      "v3plus": false,
+      "minValue": 0,
+      "maxValue": 0,
+      "ConfigurationParameterValues": [
+        {
+          "From": 0,
+          "To": 0,
+          "Description": "Disable",
+          "DescriptionJSONSafe": "Disable"
+        },
+        {
+          "From": 1,
+          "To": 1,
+          "Description": "Enable",
+          "DescriptionJSONSafe": "Enable"
+        }
+      ]
+    }
+  ],
+  "Features": [
+    {
+      "feature_Id": 22,
+      "product_Id": 3600,
+      "option_value_bool": false,
+      "option_value_text": "",
+      "option_value_selections": [
+        "Updatable by Manufacturer"
+      ],
+      "feature_Type": "eSelect_One",
+      "featureName": "Firmware Updatable",
+      "featureDescription": "Indicates whether the firmware can be updated and whether it is done by the consumer or a technician.",
+      "featurePrompt": "Choose one."
+    }
+  ],
+  "Documents": [
+    {
+      "Id": 25741,
+      "product_id": 3600,
+      "Type": 21,
+      "description": "Product Picture",
+      "value": "product_pictures/ZC10-19086695.png",
+      "not_public": false
+    },
+    {
+      "Id": 25742,
+      "product_id": 3600,
+      "Type": 1,
+      "description": "Product or Owner's Manual",
+      "value": "MarketCertificationFiles/3600/39351 Binder.pdf",
+      "not_public": false
+    }
+  ],
+  "Texts": [
+    {
+      "Id": 32918,
+      "product_id": 3600,
+      "Type": 1,
+      "description": "Inclusion",
+      "value": "1. Follow the instructions for your Z-Wave certified controller to add a device to the Z-Wave network.\r\n2. Once the controller is ready to add your device, press and release the top or bottom of the wireless smart dimmer (rocker) to add it in the network.\r\nIf prompted by the controller to enter the S2 security code, refer to the QR code/security number on the back of the box, or the QR code label on the product."
+    }
+  ],
+  "SupportedMultilevelSensors": [],
+  "ControlledMultilevelSensors": [],
+  "SupportedNotificationTypes": [],
+  "ControlledNotificationTypes": [],
+  "SupportedControlledMeterTypes": [],
+  "Supports_NWI": true,
+  "Supports_Explorer": true,
+  "is_FLiRS": false,
+  "Supports_SmartStart": true
+}

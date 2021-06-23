@@ -12,5 +12,6 @@
     "pages.main.sections.S2Classes.name": "S2 Classes",
     "pages.main.sections.AssociationGroups.name": "Association Groups",
     "pages.main.sections.ConfigurationParameters.name": "Configuration Parameters",
-    "pages.main.sections.Features.name": "Features"
+    "pages.main.sections.Features.name": "Features",
+    "pages.main.sections.Texts.name": "Texts"
 }

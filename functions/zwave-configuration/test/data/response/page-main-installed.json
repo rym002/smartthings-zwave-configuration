@@ -9,35 +9,22 @@
             "previousPageId": null,
             "sections": [
                 {
-                    "name": "Association Groups",
-                    "hidden": true,
+                    "name": "Device Summary",
                     "settings": [
                         {
-                            "id": "1",
-                            "type": "PAGE",
-                            "name": "",
-                            "description": "Association Group 1 supports Lifeline, Multilevel Switch Report",
-                            "page": "associationGroup1"
-                        },
-                        {
-                            "id": "2",
-                            "type": "PAGE",
-                            "name": "",
-                            "description": "Association Group 2 supports Basic Set and is controlled by pressing the ON or OFF button with the local load",
-                            "page": "associationGroup2"
-                        },
-                        {
-                            "id": "3",
-                            "type": "PAGE",
-                            "name": "",
-                            "description": "Association Group 3 supports Basic Set and is controlled by double pressing the ON or OFF button",
-                            "page": "associationGroup3"
+                            "id": "deviceInfo",
+                            "image": "https://products.z-wavealliance.org/ProductImages/ProductImage?prod=3600&which=21",
+                            "required": false,
+                            "type": "IMAGE",
+                            "name": "In-Wall Smart Dimmer",
+                            "description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!"
                         }
                     ]
                 },
                 {
                     "name": "Configuration Parameters",
                     "hidden": true,
+                    "hideable": true,
                     "settings": [
                         {
                             "id": "parameter16",
@@ -49,59 +36,86 @@
                     ]
                 },
                 {
-                    "name": "Device Summary",
+                    "name": "Association Groups",
+                    "hidden": true,
+                    "hideable": true,
                     "settings": [
                         {
-                            "id": "name",
-                            "required": false,
-                            "type": "PARAGRAPH",
-                            "name": "In-Wall Smart Dimmer",
-                            "description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!"
+                            "id": "associationGroup1",
+                            "type": "PAGE",
+                            "name": "Association Group 1",
+                            "description": "Association Group 1 supports Lifeline, Multilevel Switch Report",
+                            "page": "associationGroup1"
+                        },
+                        {
+                            "id": "associationGroup2",
+                            "type": "PAGE",
+                            "name": "Association Group 2",
+                            "description": "Association Group 2 supports Basic Set and is controlled by pressing the ON or OFF button with the local load",
+                            "page": "associationGroup2"
+                        },
+                        {
+                            "id": "associationGroup3",
+                            "type": "PAGE",
+                            "name": "Association Group 3",
+                            "description": "Association Group 3 supports Basic Set and is controlled by double pressing the ON or OFF button",
+                            "page": "associationGroup3"
                         }
                     ]
                 },
                 {
                     "name": "Supported Command Classes",
                     "hidden": true,
+                    "hideable": true,
                     "settings": [
                         {
-                            "id": "COMMAND_CLASS_APPLICATION_STATUS",
+                            "id": "SupportedCommandClassesCOMMAND_CLASS_APPLICATION_STATUS",
                             "required": false,
                             "type": "PARAGRAPH",
-                            "name": "COMMAND_CLASS_APPLICATION_STATUS",
-                            "description": "Application Status"
+                            "name": "Application Status",
+                            "description": "COMMAND_CLASS_APPLICATION_STATUS"
+                        },
+                        {
+                            "id": "SupportedCommandClassesCOMMAND_CLASS_BASIC_V2",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Basic V2",
+                            "description": "COMMAND_CLASS_BASIC_V2"
                         }
                     ]
                 },
                 {
                     "name": "Controlled Command Classes",
                     "hidden": true,
+                    "hideable": true,
                     "settings": [
                         {
-                            "id": "COMMAND_CLASS_BASIC_V2",
+                            "id": "ControlledCommandClassesCOMMAND_CLASS_BASIC_V2",
                             "required": false,
                             "type": "PARAGRAPH",
-                            "name": "COMMAND_CLASS_BASIC_V2",
-                            "description": "Basic V2"
+                            "name": "Basic V2",
+                            "description": "COMMAND_CLASS_BASIC_V2"
                         }
                     ]
                 },
                 {
                     "name": "S2 Classes",
                     "hidden": true,
+                    "hideable": true,
                     "settings": [
                         {
-                            "id": "S2_AUTHENTICATED",
+                            "id": "S2ClassesS2_AUTHENTICATED",
                             "required": false,
                             "type": "PARAGRAPH",
-                            "name": "S2_AUTHENTICATED",
-                            "description": "S2 Authenticated"
+                            "name": "S2 Authenticated",
+                            "description": "S2_AUTHENTICATED"
                         }
                     ]
                 },
                 {
                     "name": "Features",
                     "hidden": true,
+                    "hideable": true,
                     "settings": [
                         {
                             "id": "22",
@@ -109,6 +123,20 @@
                             "type": "PARAGRAPH",
                             "name": "Firmware Updatable",
                             "description": "Indicates whether the firmware can be updated and whether it is done by the consumer or a technician."
+                        }
+                    ]
+                },
+                {
+                    "hidden": true,
+                    "hideable": true,
+                    "name": "Texts",
+                    "settings": [
+                        {
+                            "description": "1. Follow the instructions for your Z-Wave certified controller to add a device to the Z-Wave network.\r\n2. Once the controller is ready to add your device, press and release the top or bottom of the wireless smart dimmer (rocker) to add it in the network.\r\nIf prompted by the controller to enter the S2 security code, refer to the QR code/security number on the back of the box, or the QR code label on the product.",
+                            "id": "text32918",
+                            "name": "Inclusion",
+                            "required": false,
+                            "type": "PARAGRAPH"
                         }
                     ]
                 }

@@ -1,13 +1,18 @@
-import { SmartApp, SmartAppContext, Page, Section, ContextStore } from '@smartthings/smartapp'
+import { SmartApp, SmartAppContext, Page, Section, ContextStore, ContextRecord } from '@smartthings/smartapp'
 import { InstalledAppConfiguration, ConfigValueType } from '@smartthings/core-sdk'
 import appConfig from './config'
 import { AssociationGroup, CommandClass, ConfigurationParameter, ZwaveDevice, ZWaveInfo } from './deviceInfo'
 import { Manufacturer, ZWaveConfigurationCapability, ZWaveDeviceState } from './capability'
 import { AppEvent } from '@smartthings/smartapp/lib/lifecycle-events'
-
-const DynamoDBContextStore = require('@smartthings/dynamodb-context-store')
+import { contextStoreCreator } from './contextStore'
 const ZWAVE_DEVICE = 'selectedZwaveDevice'
 
+interface AppState {
+    zwaveProductId: number
+}
+interface SmartAppContextWithInstalledId extends SmartAppContext {
+    installedAppId: string
+}
 async function retrieveZWaveDeviceWithState(context: SmartAppContext): Promise<ZWaveDeviceState> {
     if (context.isAuthenticated()) {
         const devices = await context.configDevicesWithState(ZWAVE_DEVICE)
@@ -25,23 +30,24 @@ async function retrieveZwaveCapability(context: SmartAppContext): Promise<ZWaveC
 }
 
 class Pages {
-    static ZWAVE_PRODUCT_ID = "zwaveProductId"
 
-    private summarySection(zwaveInfo: ZWaveInfo, page: Page) {
+    private summarySection(zwaveInfo: ZWaveInfo, page: Page, device: ZwaveDevice) {
         page.section('summaryInfo', section => {
-            section.paragraphSetting('name')
+            section.imageSetting('deviceInfo')
+                .image(device.deviceImage())
                 .name(zwaveInfo.Name)
                 .description(zwaveInfo.Description)
         })
     }
     private commandClassSection(page: Page, sectionName: string, commandClasses: CommandClass[]) {
-        if (commandClasses.length) {
+        if (commandClasses && commandClasses.length) {
             page.section(sectionName, (section: Section) => {
                 section.hidden(true)
+                section.hideable(true)
                 commandClasses.forEach(commandClass => {
-                    section.paragraphSetting(commandClass.Identifier)
-                        .name(commandClass.Identifier)
-                        .description(commandClass.Name)
+                    section.paragraphSetting(`${sectionName}${commandClass.Identifier}`)
+                        .name(commandClass.Name)
+                        .description(commandClass.Identifier)
                 })
             })
         }
@@ -52,49 +58,64 @@ class Pages {
         this.commandClassSection(page, 'S2Classes', zwaveInfo.S2Classes)
     }
     private associationGroupsSection(zwaveInfo: ZWaveInfo, page: Page) {
-        page.section('AssociationGroups', section => {
-            section.hidden(true)
-            zwaveInfo.AssociationGroups.forEach(associationGroup => {
-                const pageName = this.asscoiationGroupPageName(associationGroup.GroupNumber)
-                section.pageSetting(associationGroup.GroupNumber.toString())
-                    .page(pageName)
-                    .name(associationGroup.group_name)
-                    .description(associationGroup.Description)
+        const associationGroups = zwaveInfo.AssociationGroups
+        if (associationGroups && associationGroups.length) {
+            page.section('AssociationGroups', section => {
+                section.hidden(true)
+                section.hideable(true)
+                associationGroups.forEach(associationGroup => {
+                    const pageName = this.associationGroupPageName(associationGroup.GroupNumber)
+                    section.pageSetting(pageName)
+                        .page(pageName)
+                        .name(`Association Group ${associationGroup.GroupNumber}`)
+                        .description(associationGroup.Description)
+                })
             })
-        })
+        }
     }
     private configurationParametersSection(zwaveInfo: ZWaveInfo, page: Page) {
-        page.section('ConfigurationParameters', section => {
-            section.hidden(true)
-            zwaveInfo.ConfigurationParameters.forEach(configurationParameter => {
-                const pageName = this.parameterPageName(configurationParameter.ParameterNumber)
-                section.pageSetting(pageName)
-                    .page(pageName)
-                    .name(configurationParameter.Name)
-                    .description(configurationParameter.Description)
+        const configurationParameters = zwaveInfo.ConfigurationParameters
+        if (configurationParameters && configurationParameters.length) {
+            page.section('ConfigurationParameters', section => {
+                section.hidden(true)
+                section.hideable(true)
+                configurationParameters.forEach(configurationParameter => {
+                    const pageName = this.parameterPageName(configurationParameter.ParameterNumber)
+                    section.pageSetting(pageName)
+                        .page(pageName)
+                        .name(configurationParameter.Name)
+                        .description(configurationParameter.Description)
+                })
             })
-        })
+        }
     }
     private featuresSection(zwaveInfo: ZWaveInfo, page: Page) {
-        page.section('Features', section => {
-            section.hidden(true)
-            zwaveInfo.Features.forEach(feature => {
-                section.paragraphSetting(feature.feature_Id.toString())
-                    .name(feature.featureName)
-                    .description(feature.featureDescription)
+        const features = zwaveInfo.Features
+        if (features && features.length) {
+            page.section('Features', section => {
+                section.hidden(true)
+                section.hideable(true)
+                features.forEach(feature => {
+                    section.paragraphSetting(feature.feature_Id.toString())
+                        .name(feature.featureName)
+                        .description(feature.featureDescription)
+                })
             })
-        })
+        }
     }
-    private zwaveProductIdFromConfig(configMap: AppEvent.ConfigMap): number {
-        const config = configMap[Pages.ZWAVE_PRODUCT_ID]
-        if (config && config[0].stringConfig) {
-            return Number(config[0].stringConfig.value)
+    private async zwaveProductId(installedAppId: string): Promise<number> {
+        const contextStore = contextStoreCreator.createContextStore<AppState>()
+        const contextRecord = await contextStore.get(installedAppId)
+        const state = contextRecord.state
+        if (state) {
+            return state.zwaveProductId
         }
         throw new Error('Product Id not found')
     }
     private async parameterSection(configurationParameter: ConfigurationParameter, page: Page): Promise<void> {
         //TODO: parameter handling
         page.section('parameter', section => {
+            section.name(`Configuration Parameter ${configurationParameter.ParameterNumber}`)
             section.paragraphSetting('name')
                 .name(configurationParameter.Name)
                 .description(configurationParameter.Description)
@@ -104,6 +125,7 @@ class Pages {
     private async associationGroupSection(associationGroup: AssociationGroup, page: Page): Promise<void> {
         //TODO: association group handling
         page.section('associationGroup', section => {
+            section.name(`Association Group ${associationGroup.GroupNumber}`)
             section.paragraphSetting('name')
                 .name(associationGroup.group_name)
                 .description(associationGroup.Description)
@@ -115,54 +137,69 @@ class Pages {
             context: SmartAppContext,
             page: Page,
             configData?: InstalledAppConfiguration): Promise<void> => {
-            try {
-                const zwaveProductId = this.zwaveProductIdFromConfig(context.config)
-                const zwDevice = new ZwaveDevice(zwaveProductId)
-                const zwInfo = await zwDevice.deviceInfo()
-                const parameters = zwInfo.ConfigurationParameters.filter(configurationParameter => {
-                    return configurationParameter.ParameterNumber == parameterNumber
-                })
-
-                if (parameters) {
-                    const parameter = parameters[0]
-                    await this.parameterSection(parameter, page)
-                } else {
-                    page.section('invalidParameter', section => {
-                        section.name(`Invalid Parameter`)
-                        section.paragraphSetting('invaidParameterMsg').text(`Parameter ${parameterNumber} not found for device `)
+            if (configData) {
+                try {
+                    const zwaveProductId = await this.zwaveProductId(configData.installedAppId)
+                    const zwDevice = new ZwaveDevice(zwaveProductId)
+                    const zwInfo = await zwDevice.deviceInfo()
+                    const parameters = zwInfo.ConfigurationParameters.filter(configurationParameter => {
+                        return configurationParameter.ParameterNumber == parameterNumber
                     })
+
+                    if (parameters) {
+                        const parameter = parameters[0]
+                        await this.parameterSection(parameter, page)
+                    } else {
+                        page.section('invalidParameter', section => {
+                            section.name(`Invalid Parameter`)
+                            section.paragraphSetting('invaidParameterMsg').text(`Parameter ${parameterNumber} not found for device`)
+                        })
+                    }
+                } catch (err) {
+                    this.missingProductSection(page, err)
                 }
-            } catch (err) {
-                this.missingProductSection(page, err)
+            } else {
+                this.missingConfig(page)
             }
             page.previousPageId('main')
             page.complete(true)
         }
     }
+    private missingConfig(page: Page) {
+        page.section('missingConfig', section => {
+            section.name(`Missing Config Data`)
+            section.paragraphSetting('invaidConfigMsg').text(`Config Data not found`)
+        })
+    }
+
     private associationGroupPage(groupNumber: number) {
         return async (
             context: SmartAppContext,
             page: Page,
             configData?: InstalledAppConfiguration): Promise<void> => {
-            try {
-                const zwaveProductId = this.zwaveProductIdFromConfig(context.config)
-                const zwDevice = new ZwaveDevice(zwaveProductId)
-                const zwInfo = await zwDevice.deviceInfo()
-                const associationGroups = zwInfo.AssociationGroups.filter(associationGroup => {
-                    return associationGroup.GroupNumber == groupNumber
-                })
-
-                if (associationGroups) {
-                    const associationGroup = associationGroups[0]
-                    await this.associationGroupSection(associationGroup, page)
-                } else {
-                    page.section('invalidAssociationGroup', section => {
-                        section.name(`Invalid Assocition Group`)
-                        section.paragraphSetting('invaidAssociationGroupMsg').text(`Association Group ${groupNumber} not found for device`)
+            if (configData) {
+                try {
+                    const zwaveProductId = await this.zwaveProductId(configData.installedAppId)
+                    const zwDevice = new ZwaveDevice(zwaveProductId)
+                    const zwInfo = await zwDevice.deviceInfo()
+                    const associationGroups = zwInfo.AssociationGroups.filter(associationGroup => {
+                        return associationGroup.GroupNumber == groupNumber
                     })
+
+                    if (associationGroups) {
+                        const associationGroup = associationGroups[0]
+                        await this.associationGroupSection(associationGroup, page)
+                    } else {
+                        page.section('invalidAssociationGroup', section => {
+                            section.name(`Invalid Assocition Group`)
+                            section.paragraphSetting('invaidAssociationGroupMsg').text(`Association Group ${groupNumber} not found for device`)
+                        })
+                    }
+                } catch (err) {
+                    this.missingProductSection(page, err)
                 }
-            } catch (err) {
-                this.missingProductSection(page, err)
+            } else {
+                this.missingConfig(page)
             }
             page.previousPageId('main')
             page.complete(true)
@@ -173,17 +210,17 @@ class Pages {
         page: Page,
         configData?: InstalledAppConfiguration): Promise<void> {
         if (configData) {
-            const installedContext = await smartAppCreator.installedSmartAppContext(configData.installedAppId)
-            if (installedContext.isAuthenticated()) {
+            if (context.isAuthenticated()) {
                 try {
-                    const zwaveProductId = this.zwaveProductIdFromConfig(installedContext.config)
+                    const zwaveProductId = await this.zwaveProductId(configData.installedAppId)
                     const zwDevice = new ZwaveDevice(zwaveProductId)
                     const zwaveInfo = await zwDevice.deviceInfo()
-                    this.associationGroupsSection(zwaveInfo, page)
+                    this.summarySection(zwaveInfo, page, zwDevice)
                     this.configurationParametersSection(zwaveInfo, page)
-                    this.summarySection(zwaveInfo, page)
+                    this.associationGroupsSection(zwaveInfo, page)
                     this.commandClassesSection(zwaveInfo, page)
                     this.featuresSection(zwaveInfo, page)
+                    this.textSection(zwaveInfo, page)
                 } catch (err) {
                     this.missingProductSection(page, err)
                 }
@@ -223,7 +260,7 @@ class Pages {
             .page('main', this.mainPage.bind(this))
 
     }
-    private asscoiationGroupPageName(parameter: number): string {
+    private associationGroupPageName(parameter: number): string {
         return `associationGroup${parameter}`
     }
     private parameterPageName(parameter: number): string {
@@ -237,9 +274,25 @@ class Pages {
     }
     private associationGroupPages(smartApp: SmartApp): SmartApp {
         for (let groupId = 1; groupId <= 255; groupId++) {
-            smartApp = smartApp.page(this.asscoiationGroupPageName(groupId), this.associationGroupPage(groupId).bind(this))
+            smartApp = smartApp.page(this.associationGroupPageName(groupId), this.associationGroupPage(groupId).bind(this))
         }
         return smartApp
+    }
+
+    private textSection(zwaveInfo: ZWaveInfo, page: Page) {
+        const texts = zwaveInfo.Texts
+        if (texts && texts.length) {
+            page.section('Texts', section => {
+                section.hidden(true)
+                section.hideable(true)
+                texts.forEach(text => {
+                    section.paragraphSetting(`text${text.Id}`)
+                        .name(text.description)
+                        .description(text.value)
+                })
+            })
+        }
+
     }
 }
 
@@ -256,15 +309,6 @@ class SmartAppCreator {
         })
     }
 
-    contextStore(): ContextStore {
-        return new DynamoDBContextStore({
-            autoCreate: false,
-            AWSRegion: process.env.AWS_REGION,
-            table: {
-                name: process.env.context_store_table
-            }
-        })
-    }
     async updatedHandler(context: SmartAppContext, installData: AppEvent.InstallData): Promise<void> {
         const deviceCapabilty = await retrieveZwaveCapability(context)
         const deleteRet = await context.api.subscriptions.delete()
@@ -272,8 +316,6 @@ class SmartAppCreator {
             ZWaveConfigurationCapability.CAPABILITY_ID,
             'manufacturer', 'manufacturerEvent')
         const status = await deviceCapabilty.refreshManufacturer()
-
-        console.log(status)
     }
 
     async manufacturerEventHandler(
@@ -284,14 +326,15 @@ class SmartAppCreator {
         const manufacturerHex = ZWaveConfigurationCapability.toManufacturerHex(manufacturer)
         try {
             const zwaveProductId = await ZwaveDevice.zwaveAllianceProductId(manufacturerHex)
-            context.config[Pages.ZWAVE_PRODUCT_ID] = [
-                {
-                    valueType: ConfigValueType.STRING,
-                    stringConfig: {
-                        value: zwaveProductId.toString()
-                    }
-                }
-            ]
+            const state: AppState = {
+                zwaveProductId
+            }
+            const contextStore = contextStoreCreator.createContextStore()
+            const contextWId = <SmartAppContextWithInstalledId>context
+            const installedAppId = contextWId.installedAppId
+            contextStore.update(installedAppId, {
+                state
+            })
         } catch (err) {
             console.log('Error %j', err)
         }
@@ -301,7 +344,7 @@ class SmartAppCreator {
         if (!this.smartApp) {
             const smartApp = await this.clientConfig()
             this.smartApp = this.pages.configurePages(smartApp)
-                .contextStore(this.contextStore())
+                .contextStore(contextStoreCreator.createContextStore())
                 .enableEventLogging()
                 .configureI18n()
                 .updated(this.updatedHandler.bind(this))
@@ -314,7 +357,7 @@ class SmartAppCreator {
     async installedSmartAppContext(installedAppId: string): Promise<SmartAppContext> {
         const smartApp = await this.clientConfig()
         const ret = await smartApp
-            .contextStore(this.contextStore())
+            .contextStore(contextStoreCreator.createContextStore())
             .withContext(installedAppId)
         return ret
     }

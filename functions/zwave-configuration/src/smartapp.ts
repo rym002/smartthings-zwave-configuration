@@ -139,7 +139,11 @@ class PageManager {
         }
         throw new Error('Product Id not found')
     }
-    private async parameterSection(configurationParameter: ConfigurationParameter, page: Page, context: SmartAppContext): Promise<void> {
+    private async parameterSection(configurationParameter: ConfigurationParameter, page: Page, context: SmartAppContext, configData?: InstalledAppConfiguration): Promise<void> {
+
+        if (configData){
+            context = await smartAppCreator.installedSmartAppContext(configData.installedAppId)
+        }
         const device = await retrieveZWaveDeviceWithState(context)
         //TODO: Change parameter to use a single page that shows all an enum with available parameters and current value
         page.section('parameter', section => {
@@ -203,13 +207,13 @@ class PageManager {
                 })
             }
 
-            
-                section.booleanSetting('defaultValue')
-                    .submitOnChange(true)
-                    .name('Reset to default')
-                    .description(`Update to ${configurationParameter.DefaultValue}`)
-                    .disabled(currentValue == configurationParameter.DefaultValue)
-            
+
+            section.booleanSetting('defaultValue')
+                .submitOnChange(true)
+                .name('Reset to default')
+                .description(`Update to ${configurationParameter.DefaultValue}`)
+                .disabled(currentValue == configurationParameter.DefaultValue)
+
 
             section.booleanSetting(`parameterDevice${configurationParameter.ParameterNumber}`)
                 .name('Virtual Device')
@@ -246,7 +250,7 @@ class PageManager {
 
                     if (parameters && parameters.length) {
                         const parameter = parameters[0]
-                        await this.parameterSection(parameter, page, context)
+                        await this.parameterSection(parameter, page, context, configData)
                     } else {
                         page.section('invalidParameter', section => {
                             section.name(`Invalid Parameter`)
@@ -259,7 +263,7 @@ class PageManager {
             } else {
                 this.missingConfig(page)
             }
-            page.previousPageId('main')
+            page.previousPageId('deviceMain')
         }
     }
     private missingConfig(page: Page) {
@@ -357,6 +361,7 @@ class PageManager {
     private missingProductSection(page: Page, err: Error) {
         //TODO: Change to display input for entering product id and a link/instructions
         // Can download/update manufacturer to product id mapping based on input
+        console.log(err)
         page.section('missingProduct', section => {
             section.name('Missing Product')
             section.paragraphSetting('productError')

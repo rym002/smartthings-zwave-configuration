@@ -6,7 +6,7 @@
             "complete": false,
             "pageId": "parameter2",
             "nextPageId": null,
-            "previousPageId": "main",
+            "previousPageId": "deviceMain",
             "sections": [
                 {
                     "name": "Configure Parameter 2",

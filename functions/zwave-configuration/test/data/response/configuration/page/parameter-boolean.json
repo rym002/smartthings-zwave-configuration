@@ -1,0 +1,62 @@
+{
+    "statusCode": 200,
+    "configurationData": {
+        "page": {
+            "name": "Configuration",
+            "complete": false,
+            "pageId": "parameter3",
+            "nextPageId": null,
+            "previousPageId": "main",
+            "sections": [
+                {
+                    "name": "Configure Parameter 3",
+                    "settings": [
+                        {
+                            "id": "name",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Boolean-Range Parameter",
+                            "description": ""
+                        },
+                        {
+                            "id": "parameterDefaultEnabled",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Device value 0",
+                            "description": "Set the desired value",
+                            "submitOnChange": true,
+                            "defaultValue": "0"
+                        },
+                        {
+                            "id": "parameterValue",
+                            "required": false,
+                            "type": "NUMBER",
+                            "disabled": true,
+                            "name": "Device value 0",
+                            "description": "Set the desired value",
+                            "step": 1,
+                            "min": 1,
+                            "max": 99
+                        },
+                        {
+                            "id": "defaultValue",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "disabled": true,
+                            "name": "Reset to default",
+                            "description": "Update to 0",
+                            "submitOnChange": true
+                        },
+                        {
+                            "id": "parameterDevice3",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Virtual Device",
+                            "description": "Create a virtual device to use in automations"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

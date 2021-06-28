@@ -1,0 +1,59 @@
+{
+    "statusCode": 200,
+    "configurationData": {
+        "page": {
+            "name": "Configuration",
+            "complete": false,
+            "pageId": "parameter2",
+            "nextPageId": null,
+            "previousPageId": "main",
+            "sections": [
+                {
+                    "name": "Configure Parameter 2",
+                    "settings": [
+                        {
+                            "id": "name",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Enum Parameter",
+                            "description": ""
+                        },
+                        {
+                            "id": "parameterValue",
+                            "required": false,
+                            "type": "ENUM",
+                            "name": "Device value 1",
+                            "description": "Set the desired value",
+                            "defaultValue": "1",
+                            "options": [
+                                {
+                                    "id": "0",
+                                    "name": "Disable"
+                                },
+                                {
+                                    "id": "1",
+                                    "name": "Enable"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "defaultValue",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Reset to default",
+                            "description": "Update to 0",
+                            "submitOnChange": true
+                        },
+                        {
+                            "id": "parameterDevice2",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Virtual Device",
+                            "description": "Create a virtual device to use in automations"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

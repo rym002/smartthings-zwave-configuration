@@ -17,5 +17,4 @@ export function ssmMock(sandbox: SinonSandbox, retrievers: SSMParameterRetriever
             Parameters: parameters
         };
     });
-
 }

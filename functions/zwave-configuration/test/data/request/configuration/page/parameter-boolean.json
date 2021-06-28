@@ -1,0 +1,35 @@
+{
+    "lifecycle": "CONFIGURATION",
+    "executionId": "00000000-0000-0000-0000-000000000000",
+    "appId": "myAppId",
+    "locale": "en",
+    "version": "0.1.0",
+    "client": {
+        "os": "android",
+        "version": "1.7.67.29",
+        "language": "en-US",
+        "displayMode": "LIGHT",
+        "timeZoneOffset": "",
+        "supportedTemplates": [],
+        "samsungAccountId": ""
+    },
+    "configurationData": {
+        "installedAppId": "installedAppIdWithProduct",
+        "phase": "PAGE",
+        "pageId": "parameter3",
+        "previousPageId": "",
+        "config": {
+            "selectedZwaveDevice": [
+                {
+                    "valueType": "DEVICE",
+                    "deviceConfig": {
+                        "deviceId": "myDeviceId",
+                        "componentId": "main"
+                    }
+                }
+            ]
+        },
+        "isResubmit": false
+    },
+    "settings": {}
+}

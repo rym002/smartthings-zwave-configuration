@@ -2,12 +2,33 @@
     "statusCode": 200,
     "configurationData": {
         "page": {
-            "name": "Z-Wave Configuration",
+            "name": "Z-Wave Device Configuration",
             "complete": true,
-            "pageId": "main",
+            "pageId": "deviceMain",
             "nextPageId": null,
             "previousPageId": null,
             "sections": [
+                {
+                    "name": "Z-Wave Device",
+                    "settings": [
+                        {
+                            "id": "selectedZwaveDevice",
+                            "required": true,
+                            "type": "DEVICE",
+                            "name": "Selected Device",
+                            "description": "Tap to set",
+                            "multiple": false,
+                            "capabilities": [
+                                "benchlocket65304.zwaveConfiguration"
+                            ],
+                            "permissions": [
+                                "r",
+                                "x"
+                            ],
+                            "disabled": true
+                        }
+                    ]
+                },
                 {
                     "name": "Device Summary",
                     "settings": [
@@ -48,11 +69,32 @@
                     "hideable": true,
                     "settings": [
                         {
-                            "id": "parameter16",
+                            "id": "parameter1",
                             "type": "PAGE",
-                            "name": "Enable/Disable Switch Mode",
+                            "name": "Range Parameter",
+                            "description": "Range Parameter Desc",
+                            "page": "parameter1"
+                        },
+                        {
+                            "id": "parameter2",
+                            "type": "PAGE",
+                            "name": "Enum Parameter",
                             "description": "",
-                            "page": "parameter16"
+                            "page": "parameter2"
+                        },
+                        {
+                            "id": "parameter3",
+                            "type": "PAGE",
+                            "name": "Boolean-Range Parameter",
+                            "description": "",
+                            "page": "parameter3"
+                        },
+                        {
+                            "id": "parameter4",
+                            "type": "PAGE",
+                            "name": "Boolean-Range Parameter",
+                            "description": "",
+                            "page": "parameter4"
                         }
                     ]
                 },
@@ -62,25 +104,25 @@
                     "hideable": true,
                     "settings": [
                         {
-                            "id": "associationGroup1",
-                            "type": "PAGE",
+                            "id": "associationGroup1Info",
+                            "type": "PARAGRAPH",
                             "name": "Association Group 1",
-                            "description": "Association Group 1 supports Lifeline, Multilevel Switch Report",
-                            "page": "associationGroup1"
+                            "description": "Lifeline only",
+                            "required": false
                         },
                         {
-                            "id": "associationGroup2",
-                            "type": "PAGE",
+                            "id": "associationGroup2Info",
+                            "type": "PARAGRAPH",
                             "name": "Association Group 2",
-                            "description": "Association Group 2 supports Basic Set and is controlled by pressing the ON or OFF button with the local load",
-                            "page": "associationGroup2"
+                            "description": "Multiple associations",
+                            "required": false
                         },
                         {
-                            "id": "associationGroup3",
-                            "type": "PAGE",
-                            "name": "Association Group 3",
-                            "description": "Association Group 3 supports Basic Set and is controlled by double pressing the ON or OFF button",
-                            "page": "associationGroup3"
+                            "description": "",
+                            "id": "associationGroup2Configure",
+                            "name": "Configure Association Group 2",
+                            "page": "associationGroup2",
+                            "type": "PAGE"
                         }
                     ]
                 },
@@ -158,6 +200,18 @@
                             "name": "Inclusion",
                             "required": false,
                             "type": "PARAGRAPH"
+                        }
+                    ]
+                },
+                {
+                    "name": "Manual",
+                    "settings": [
+                        {
+                            "description": "Manufacturer provided manual",
+                            "id": "manual",
+                            "name": "Device Manual",
+                            "type": "LINK",
+                            "url": "https://products.z-wavealliance.org/ProductManual/File?folder=&filename=MarketCertificationFiles/3600/39351 Binder.pdf"
                         }
                     ]
                 }

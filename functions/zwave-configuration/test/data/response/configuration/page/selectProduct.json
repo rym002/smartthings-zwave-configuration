@@ -1,0 +1,85 @@
+{
+    "configurationData": {
+        "page": {
+            "complete": true,
+            "name": "Z-Wave Product",
+            "nextPageId": null,
+            "pageId": "selectProduct",
+            "previousPageId": null,
+            "sections": [
+                {
+                    "name": "Z-Wave Info",
+                    "settings": [
+                        {
+                            "capabilities": [
+                                "benchlocket65304.zwaveConfiguration"
+                            ],
+                            "description": "Tap to set",
+                            "disabled": true,
+                            "id": "selectedZwaveDevice",
+                            "multiple": false,
+                            "name": "Selected Device",
+                            "permissions": [
+                                "r",
+                                "x"
+                            ],
+                            "required": true,
+                            "type": "DEVICE"
+                        },
+                        {
+                            "description": "4944",
+                            "id": "productTypeId",
+                            "name": "Product Type Id",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        },
+                        {
+                            "description": "0039",
+                            "id": "manufacturerId",
+                            "name": "Manufacturer Id",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        },
+                        {
+                            "description": "3235",
+                            "id": "productId",
+                            "name": "Product Id",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        }
+                    ]
+                },
+                {
+                    "name": "Z-Wave Product Id",
+                    "settings": [
+                        {
+                            "description": "1. Click below to search for your device\n2. Enter the product id from the URL https://products.z-wavealliance.org/products/<Product Id>",
+                            "id": "instructions",
+                            "name": "How to find the z-wave product id",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        },
+                        {
+                            "description": "Tap to set",
+                            "id": "zwaveProductId",
+                            "max": 12000,
+                            "min": 1,
+                            "name": "Device Product Id",
+                            "required": false,
+                            "step": 1,
+                            "type": "NUMBER"
+                        },
+                        {
+                            "description": "Find product on Z-Wave Alliance",
+                            "id": "zwaveAllianceLink",
+                            "name": "Z-wave Alliance",
+                            "type": "LINK",
+                            "url": "https://products.z-wavealliance.org/products"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "statusCode": 200
+}

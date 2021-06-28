@@ -14,11 +14,20 @@
         "samsungAccountId": ""
     },
     "configurationData": {
-        "installedAppId": "myInstalledAppId",
+        "installedAppId": "installedAppIdWithProduct",
         "phase": "PAGE",
-        "pageId": "main",
+        "pageId": "parameter4",
         "previousPageId": "",
         "config": {
+            "selectedZwaveDevice": [
+                {
+                    "valueType": "DEVICE",
+                    "deviceConfig": {
+                        "deviceId": "myDeviceId",
+                        "componentId": "main"
+                    }
+                }
+            ]
         },
         "isResubmit": false
     },

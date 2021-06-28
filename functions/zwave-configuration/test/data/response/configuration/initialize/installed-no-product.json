@@ -3,7 +3,7 @@
     "configurationData": {
         "initialize": {
             "id": "myAppId",
-            "firstPageId": "main",
+            "firstPageId": "selectProduct",
             "permissions": [],
             "disableCustomDisplayName": false,
             "disableRemoveApp": false

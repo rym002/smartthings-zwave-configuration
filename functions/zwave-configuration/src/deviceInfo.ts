@@ -124,7 +124,7 @@ export class ZwaveDevice {
     async productPicture(): Promise<string> {
         const documents = (await this.deviceInfo()).Documents
         const pictureDocuments = documents.filter(document => {
-            return document.description = "Product Picture"
+            return document.Type = 21
         })
         if (pictureDocuments) {
             return this.deviceImageUrl(pictureDocuments[0].product_id, pictureDocuments[0].Type)
@@ -132,6 +132,18 @@ export class ZwaveDevice {
             return this.deviceImageUrl(this.zwaveProductId, 21)
         }
     }
+
+    async productManual(): Promise<string | undefined> {
+        const documents = (await this.deviceInfo()).Documents
+        const manualDocuments = documents.filter(document => {
+            return document.Type == 1
+        })
+
+        if (manualDocuments && manualDocuments.length) {
+            return `https://products.z-wavealliance.org/ProductManual/File?folder=&filename=${manualDocuments[0].value}`
+        }
+    }
+    
     async deviceInfo(): Promise<ZWaveInfo> {
         if (!this.zwaveInfo) {
             const url = `https://products.z-wavealliance.org/products/${this.zwaveProductId}/JSON`

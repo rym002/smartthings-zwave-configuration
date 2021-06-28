@@ -51,24 +51,16 @@
   ],
   "AssociationGroups": [
     {
-      "Description": "Association Group 1 supports Lifeline, Multilevel Switch Report",
+      "Description": "Lifeline only",
       "GroupNumber": 1,
-      "MaximumNodes": 5,
+      "MaximumNodes": 1,
       "endpoint_id": 0,
       "group_name": "",
       "profile": ""
     },
     {
-      "Description": "Association Group 2 supports Basic Set and is controlled by pressing the ON or OFF button with the local load",
+      "Description": "Multiple associations",
       "GroupNumber": 2,
-      "MaximumNodes": 5,
-      "endpoint_id": 0,
-      "group_name": "",
-      "profile": ""
-    },
-    {
-      "Description": "Association Group 3 supports Basic Set and is controlled by double pressing the ON or OFF button",
-      "GroupNumber": 3,
       "MaximumNodes": 5,
       "endpoint_id": 0,
       "group_name": "",
@@ -77,9 +69,31 @@
   ],
   "ConfigurationParameters": [
     {
-      "Name": "Enable/Disable Switch Mode",
+      "Name": "Range Parameter",
+      "Description": "Range Parameter Desc",
+      "ParameterNumber": 1,
+      "Size": 1,
+      "DefaultValue": 3,
+      "pType": 2,
+      "flagReadOnly": false,
+      "flagReInclude": false,
+      "flagAdvanced": false,
+      "v3plus": true,
+      "minValue": 0,
+      "maxValue": 100,
+      "ConfigurationParameterValues": [
+        {
+          "From": 0,
+          "To": 100,
+          "Description": "Speed at which light dims up or down (increments)",
+          "DescriptionJSONSafe": "Speed at which light dims up or down (increments)"
+        }
+      ]
+    },
+    {
+      "Name": "Enum Parameter",
       "Description": "",
-      "ParameterNumber": 16,
+      "ParameterNumber": 2,
       "Size": 1,
       "DefaultValue": 0,
       "pType": 0,
@@ -99,6 +113,62 @@
         {
           "From": 1,
           "To": 1,
+          "Description": "Enable",
+          "DescriptionJSONSafe": "Enable"
+        }
+      ]
+    },
+    {
+      "Name": "Boolean-Range Parameter",
+      "Description": "",
+      "ParameterNumber": 3,
+      "Size": 1,
+      "DefaultValue": 0,
+      "pType": 0,
+      "flagReadOnly": false,
+      "flagReInclude": false,
+      "flagAdvanced": false,
+      "v3plus": false,
+      "minValue": 0,
+      "maxValue": 0,
+      "ConfigurationParameterValues": [
+        {
+          "From": 0,
+          "To": 0,
+          "Description": "Disable",
+          "DescriptionJSONSafe": "Disable"
+        },
+        {
+          "From": 1,
+          "To": 99,
+          "Description": "Enable",
+          "DescriptionJSONSafe": "Enable"
+        }
+      ]
+    },
+    {
+      "Name": "Boolean-Range Parameter",
+      "Description": "",
+      "ParameterNumber": 4,
+      "Size": 1,
+      "DefaultValue": 0,
+      "pType": 0,
+      "flagReadOnly": false,
+      "flagReInclude": false,
+      "flagAdvanced": false,
+      "v3plus": false,
+      "minValue": 0,
+      "maxValue": 0,
+      "ConfigurationParameterValues": [
+        {
+          "From": 0,
+          "To": 0,
+          "Description": "Disable",
+          "DescriptionJSONSafe": "Disable"
+        },
+        {
+          "From": 1,
+          "To": 99,
           "Description": "Enable",
           "DescriptionJSONSafe": "Enable"
         }

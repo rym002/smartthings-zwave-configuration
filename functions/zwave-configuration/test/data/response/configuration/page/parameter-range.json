@@ -1,0 +1,51 @@
+{
+    "statusCode": 200,
+    "configurationData": {
+        "page": {
+            "name": "Configuration",
+            "complete": false,
+            "pageId": "parameter1",
+            "nextPageId": null,
+            "previousPageId": "main",
+            "sections": [
+                {
+                    "name": "Configure Parameter 1",
+                    "settings": [
+                        {
+                            "id": "name",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Range Parameter",
+                            "description": "Range Parameter Desc"
+                        },
+                        {
+                            "id": "parameterValue",
+                            "required": false,
+                            "type": "NUMBER",
+                            "name": "Device value 0",
+                            "description": "Set the desired value",
+                            "defaultValue": "0",
+                            "max": 100,
+                            "step": 1
+                        },
+                        {
+                            "id": "defaultValue",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Reset to default",
+                            "description": "Update to 3",
+                            "submitOnChange": true
+                        },
+                        {
+                            "id": "parameterDevice1",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Virtual Device",
+                            "description": "Create a virtual device to use in automations"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

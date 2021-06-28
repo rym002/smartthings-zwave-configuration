@@ -47,7 +47,7 @@ export class ZWaveDeviceState {
     getCurrentConfigurations(): ConvertedCurrentConfigurations {
         const capabilityState = this.device.state[ZWaveConfigurationCapability.CAPABILITY_ID]
         if (capabilityState) {
-            const currentConfigurations = <Attribute<CurrentConfigurations>><unknown>capabilityState.manufacturer
+            const currentConfigurations = <Attribute<CurrentConfigurations>><unknown>capabilityState.currentConfigurations
             if (currentConfigurations) {
                 const currentConfigurationsValue = currentConfigurations.value
                 return mapValues(currentConfigurationsValue, (values) => {

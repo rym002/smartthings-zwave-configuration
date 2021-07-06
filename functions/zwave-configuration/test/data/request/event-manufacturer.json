@@ -7,7 +7,7 @@
     "eventData": {
         "authToken": "myAuthToken",
         "installedApp": {
-            "installedAppId": "myInstalledAppId",
+            "installedAppId": "noProductInstalledAppId",
             "locationId": "myLocationId",
             "config": {
                 "selectedZwaveDevice": [

@@ -17,7 +17,7 @@
         "authToken": "authToken",
         "refreshToken": "refreshToken",
         "installedApp": {
-            "installedAppId": "myInstalledAppId",
+            "installedAppId": "installedAppIdWithProduct",
             "locationId": "myLocationId",
             "config": {
                 "selectedZwaveDevice": [
@@ -26,6 +26,38 @@
                         "deviceConfig": {
                             "deviceId": "myDeviceId",
                             "componentId": "main"
+                        }
+                    }
+                ],
+                "parameter3Number": [
+                    {
+                        "valueType": "STRING",
+                        "stringConfig": {
+                            "value": "11"
+                        }
+                    }
+                ],
+                "parameter3Boolean": [
+                    {
+                        "valueType": "STRING",
+                        "stringConfig": {
+                            "value": "false"
+                        }
+                    }
+                ],
+                "parameter3Virtual": [
+                    {
+                        "valueType": "STRING",
+                        "stringConfig": {
+                            "value": "false"
+                        }
+                    }
+                ],
+                "parameter3Default": [
+                    {
+                        "valueType": "STRING",
+                        "stringConfig": {
+                            "value": "false"
                         }
                     }
                 ]

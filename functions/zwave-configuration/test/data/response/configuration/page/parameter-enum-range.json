@@ -4,37 +4,47 @@
         "page": {
             "name": "Configuration",
             "complete": false,
-            "pageId": "parameter3",
+            "pageId": "parameter4",
             "nextPageId": null,
             "previousPageId": "deviceMain",
             "sections": [
                 {
-                    "name": "Configure Parameter 3",
+                    "name": "Configure Parameter 4",
                     "settings": [
                         {
-                            "id": "parameter3Virtual",
+                            "id": "parameter4Virtual",
                             "required": false,
                             "type": "BOOLEAN",
                             "name": "Virtual Device",
                             "description": "Create a virtual device to use in automations"
                         },
                         {
-                            "id": "parameter3Boolean",
+                            "id": "parameter4Enum",
                             "required": false,
-                            "type": "BOOLEAN",
-                            "name": "Boolean-Range Parameter",
+                            "type": "ENUM",
+                            "name": "Enum-Range Parameter",
                             "description": "",
-                            "submitOnChange": true
+                            "submitOnChange": true,
+                            "options": [
+                                {
+                                    "id": "0",
+                                    "name": "Disable"
+                                },
+                                {
+                                    "id": "1",
+                                    "name": "Enable"
+                                }
+                            ]
                         },
                         {
-                            "id": "parameter3Number",
+                            "id": "parameter4Number",
                             "required": false,
                             "type": "NUMBER",
                             "disabled": true,
-                            "name": "Boolean-Range Parameter",
+                            "name": "Enum-Range Parameter",
                             "description": "",
                             "step": 1,
-                            "min": 1,
+                            "min": 2,
                             "max": 99,
                             "defaultValue": "10"
                         },
@@ -46,7 +56,7 @@
                             "type": "PARAGRAPH"
                         },
                         {
-                            "id": "parameter3Default",
+                            "id": "parameter4Default",
                             "required": false,
                             "type": "BOOLEAN",
                             "name": "Reset to default",

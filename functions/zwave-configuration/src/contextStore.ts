@@ -11,7 +11,7 @@ export interface ContextRecordWithState<T> extends ContextRecord {
  * Some reason the ts does not incude update and delete
  */
 interface ContextStoreFull<T> extends ContextStore {
-	get(installedAppId: string): Promise<ContextRecordWithState<T>>
+    get(installedAppId: string): Promise<ContextRecordWithState<T>>
     update(installedAppId: string, contextRecord: Partial<ContextRecordWithState<T>>): Promise<void>
     delete(installedAppId: string): Promise<void>
 }
@@ -26,8 +26,17 @@ class MemoizedContextStore<T> implements ContextStoreFull<T> {
 
     }
     get = memoize(this.backingStore.get.bind(this.backingStore))
-    put = this.backingStore.put.bind(this.backingStore)
 
+    async put(contextRecord: ContextRecordWithState<T>): Promise<ContextRecord> {
+        if (!contextRecord.state) {
+            const current = <ContextRecordWithState<T>>await this.get(contextRecord.installedAppId)
+            if (current && current.state) {
+                contextRecord.state = current.state
+            }
+        }
+        this.get.cache.delete(contextRecord.installedAppId)
+        return this.backingStore.put(contextRecord)
+    }
     async update(installedAppId: string, contextRecord: ContextRecord): Promise<void> {
         this.get.cache.delete(installedAppId)
         await this.backingStore.update(installedAppId, contextRecord)

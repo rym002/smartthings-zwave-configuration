@@ -65,9 +65,15 @@
                 },
                 {
                     "name": "Configuration Parameters",
-                    "hidden": true,
                     "hideable": true,
                     "settings": [
+                        {
+                            "description": "",
+                            "id": "parameterInstructions",
+                            "name": "Click a parameter to configure",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        },
                         {
                             "id": "parameter1",
                             "type": "PAGE",
@@ -92,7 +98,7 @@
                         {
                             "id": "parameter4",
                             "type": "PAGE",
-                            "name": "Boolean-Range Parameter",
+                            "name": "Enum-Range Parameter",
                             "description": "",
                             "page": "parameter4"
                         }
@@ -100,7 +106,6 @@
                 },
                 {
                     "name": "Association Groups",
-                    "hidden": true,
                     "hideable": true,
                     "settings": [
                         {

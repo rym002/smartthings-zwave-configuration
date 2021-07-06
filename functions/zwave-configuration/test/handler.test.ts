@@ -1,12 +1,12 @@
-import { Device } from '@smartthings/core-sdk'
+import { Device, Command } from '@smartthings/core-sdk'
 import { assert, expect } from 'chai'
 import 'mocha'
 import * as nock from 'nock'
 import { FakeContext, getContextSandbox, ssmMock, getItemMock, updateItemMock, putItemMock } from 'st-mocha-mocks'
-import { SinonSpy } from 'st-mocha-mocks/node_modules/@types/sinon'
 import { handler } from '../src'
 import { contextStoreCreator } from '../src/contextStore'
 import { smartAppCreator } from '../src/smartapp'
+import { ManufacturerHex, ProductIdMap, productService } from '../src/deviceInfo'
 
 
 
@@ -49,6 +49,10 @@ describe('Test Test', () => {
         if (smartAppCreator.createSmartApp.cache.clear) {
             smartAppCreator.createSmartApp.cache.clear()
         }
+
+        if (productService.db.cache.clear) {
+            productService.db.cache.clear()
+        }
         nock.cleanAll()
     })
     context('CONFIGURATION', () => {
@@ -62,9 +66,7 @@ describe('Test Test', () => {
             it('should return the product page if no product found', async function () {
                 const sandbox = getContextSandbox(this)
                 getItemMock(sandbox, [
-                    <ContextKey>(tableName: string, key: ContextKey) => {
-                        return contextNoState
-                    }
+                    smartappContextRetriever
                 ])
                 await testRequest(`${folder}installed-no-product`)
             })
@@ -72,9 +74,7 @@ describe('Test Test', () => {
             it('should return the deviceMain page for existing install', async function () {
                 const sandbox = getContextSandbox(this)
                 getItemMock(sandbox, [
-                    <ContextKey>(tableName: string, key: ContextKey) => {
-                        return contextWithProductId
-                    }
+                    smartappContextRetriever
                 ])
                 await testRequest(`${folder}installed-product`)
             })
@@ -84,9 +84,7 @@ describe('Test Test', () => {
             beforeEach(function () {
                 const sandbox = getContextSandbox(this)
                 getItemMock(sandbox, [
-                    <ContextKey>(tableName: string, key: ContextKey) => {
-                        return contextWithProductId
-                    }
+                    smartappContextRetriever
                 ])
                 mockZwaveProduct(3600)
             })
@@ -115,11 +113,15 @@ describe('Test Test', () => {
                     await testRequest(`${folder}parameter-boolean`)
                 })
                 it('should return parameter with boolean and range when the current', async () => {
-                    await testRequest(`${folder}parameter-boolean-range`)
+                    await testRequest(`${folder}parameter-enum-range`)
+                })
+                it('should display device settings with virtual device enabled')
+                it('should disable device settings with default enabled', async () => {
+                    await testRequest(`${folder}parameter-default`)
                 })
             })
-            context('Association Group',()=>{
-                
+            context('Association Group', () => {
+                it('should show current associations')
             })
         })
     })
@@ -127,11 +129,8 @@ describe('Test Test', () => {
         beforeEach(function () {
             const sandbox = getContextSandbox(this)
             getItemMock(sandbox, [
-                <ContextKey>(tableName: string, key: ContextKey) => {
-                    return contextWithProductId
-                }
+                smartappContextRetriever
             ])
-            mockZwaveProduct(3600)
         })
         it('INSTALL', async function () {
             const smartthingsMock = nock('https://api.smartthings.com')
@@ -176,14 +175,96 @@ describe('Test Test', () => {
             expect(smartthingsMock.done(), 'Smartthings not called')
             sandbox.assert.calledOnce(putItem)
         })
-        it('UPDATE', async function () {
-            // await testRequest('update')
-            // if (this.test && this.test.ctx) {
-            //     const smartthingsNock = <nock.Scope>this.test.ctx['smartthingsNock']
-            //     expect(smartthingsNock.done(), 'Smartthings not called')
-            // } else {
-            //     assert(false, 'Test ctx not found')
-            // }
+        context('UPDATE', () => {
+            const root = 'update/'
+            beforeEach(function () {
+                const stateMock = mockDeviceState('myDeviceId')
+                const zwMock = mockZwaveProduct(3600)
+            })
+            it('should update zwaveProductId', async function () {
+                const sandbox = getContextSandbox(this)
+                let product_saved: ProductIdMap | undefined = undefined
+                const putItem = putItemMock(sandbox, [
+                    (table, key: any) => {
+                        switch (table) {
+                            case 'smartapp':
+                                break
+                            case 'zwave_product_map':
+                                product_saved = <ProductIdMap>key
+                                break
+                            default:
+                                throw new Error('Invalid')
+                        }
+                    }
+                ])
+                const updateSpy = updateItemMock(sandbox, [
+                    (table) => {
+
+                    }
+                ])
+                mockZwaveProduct(3600)
+                const supportedSpy = mockSupportedConfigurations([1,2,3,4])
+                await testRequest(`${root}zwave-product-id`)
+                sandbox.assert.calledTwice(putItem)
+                expect(product_saved, 'ZWave Product Not Saved').to.eql(dev1Map)
+                sandbox.assert.calledOnce(updateSpy)
+                supportedSpy.done()
+            })
+            context('Parameters', () => {
+                beforeEach(function () {
+                    const sandbox = getContextSandbox(this)
+                    getItemMock(sandbox, [
+                        smartappContextRetriever
+                    ])
+                    const putItem = putItemMock(sandbox, [
+                        (table, key: any) => {
+                            switch (table) {
+                                case 'smartapp':
+                                    break
+                                default:
+                                    throw new Error('Invalid')
+                            }
+                        }
+                    ])
+                })
+                it('should read range parameter', async function () {
+                    const commandMock = mockUpdateParameter(1, [10], false)
+                    await testRequest(`${root}parameter-range`)
+                    commandMock.done()
+                })
+                it('should read enum value', async function () {
+                    const commandMock = mockUpdateParameter(2, [3], false)
+                    await testRequest(`${root}parameter-enum`)
+                    commandMock.done()
+                })
+                it('should use boolean value if true', async function () {
+                    const commandMock = mockUpdateParameter(3, [0], false)
+                    await testRequest(`${root}parameter-boolean-true`)
+                    commandMock.done()
+                })
+                it('should use range value if boolean is false', async function () {
+                    const commandMock = mockUpdateParameter(3, [11], false)
+                    await testRequest(`${root}parameter-boolean-false`)
+                    commandMock.done()
+                })
+                it('should use enum value if set', async function () {
+                    const commandMock = mockUpdateParameter(4, [1], false)
+                    await testRequest(`${root}parameter-enum-range`)
+                    commandMock.done()
+                })
+                it('should skip update if current value matches', async function () {
+                    const commandMock = mockUpdateParameter(1, [0], false)
+                    await testRequest(`${root}parameter-range`)
+                    assert(!commandMock.isDone(), 'Command Not Executed')
+                })
+                it('should send value if refresh', async function () {
+                    const commandMock = mockUpdateParameter(1, [3], true)
+                    await testRequest(`${root}parameter-refresh`)
+                    commandMock.done()
+                })
+                it('should create virtual device when enabled')
+            })
+            it('should update association group')
         })
         it('UNINSTALL', async function () {
             await testRequest('uninstall')
@@ -197,8 +278,15 @@ describe('Test Test', () => {
 
                 }
             ])
+            getItemMock(sandbox, [
+                smartappContextRetriever,
+                productMapRetriever
+            ])
+            mockZwaveProduct(3600)
+            const supportedSpy = mockSupportedConfigurations([1,2,3,4])
             await testRequest('event-manufacturer')
             sandbox.assert.calledOnce(updateSpy)
+            supportedSpy.done()
         })
     })
 })
@@ -223,7 +311,7 @@ async function testRequest(fileName: string): Promise<void> {
 }
 
 const contextNoState: ContextRecord = {
-    installedAppId: 'myinstalledAppId',
+    installedAppId: 'noProductInstalledAppId',
     authToken: 'myAuthToken',
     locationId: 'myLocationId',
     refreshToken: 'myRefreshToken',
@@ -242,10 +330,24 @@ const contextNoState: ContextRecord = {
 
 const contextWithProductId: ContextRecord = {
     ...contextNoState,
+    installedAppId: 'installedAppIdWithProduct',
     state: {
         zwaveProductId: 3600
     }
 }
+
+const smartappContext = new Map<string, ContextRecord>()
+smartappContext.set(`ctx:${contextNoState.installedAppId}`, contextNoState)
+smartappContext.set(`ctx:${contextWithProductId.installedAppId}`, contextWithProductId)
+
+const dev1Map: ProductIdMap = {
+    manufacturerId: '0x0039',
+    productId: '0x3235',
+    productTypeId: '0x4944',
+    zWaveId: 3600
+}
+const zwaveProductMap = new Map<string, ProductIdMap>()
+zwaveProductMap.set(`${dev1Map.manufacturerId}${dev1Map.productTypeId}${dev1Map.productId}`, dev1Map)
 
 function mockDeviceState(deviceId: string) {
     return nock(`https://api.smartthings.com/devices/${deviceId}`)
@@ -267,8 +369,8 @@ function mockDeviceState(deviceId: string) {
                         currentConfigurations: {
                             value: {
                                 "1": [0],
-                                "2": [1],
-                                "3": [0],
+                                "2": [0],
+                                "3": [10],
                                 "4": [10]
                             },
                             timestamp: "2021-06-23T04:50:31.256Z"
@@ -292,4 +394,45 @@ function mockZwaveProduct(productId: number) {
         .get(`/${productId}/JSON`)
         .replyWithFile(200, __dirname + `/data/nock/products/${productId}.json`)
 
+}
+
+function smartappContextRetriever(tableName: string, key: ContextKey) {
+    if (tableName == 'smartapp') {
+        return smartappContext.get(key.id)
+    }
+}
+
+function productMapRetriever(tableName: string, key: ManufacturerHex) {
+    if (tableName == 'zwave_product_map') {
+        return zwaveProductMap.get(`${key.manufacturerId}${key.productTypeId}${key.productId}`)
+    }
+}
+
+function mockUpdateParameter(parameter: number, value: number[], defaultValue: boolean) {
+    return mockCommand({
+        capability: 'benchlocket65304.zwaveConfiguration',
+        command: 'updateConfiguration',
+        component: 'main',
+        arguments: [parameter, value, defaultValue ? 1 : 0]
+    }, 'myDeviceId')
+
+}
+
+function mockSupportedConfigurations(parameters:number[]){
+    return mockCommand({
+        capability: 'benchlocket65304.zwaveConfiguration',
+        command: 'supportedConfigurations',
+        component: 'main',
+        arguments: [parameters]
+    }, 'myDeviceId')
+
+}
+function mockCommand(command: Command & nock.DataMatcherMap, deviceId: string) {
+    return nock(`https://api.smartthings.com/devices/${deviceId}`)
+        .post('/commands', {
+            commands: [command]
+        })
+        .reply(200, {
+            status: 'ACCEPTED'
+        })
 }

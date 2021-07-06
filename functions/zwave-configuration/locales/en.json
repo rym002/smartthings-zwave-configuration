@@ -20,6 +20,8 @@
     "pages.deviceMain.sections.Texts.name": "Texts",
     "pages.deviceMain.sections.Manual.name": "Manual",
     "pages.deviceMain.settings.manual.description": "Manufacturer provided manual",
+    "pages.deviceMain.settings.parameterInstructions.name": "Click a parameter to configure",
+    "pages.deviceMain.settings.parameterInstructions.description": "",
     "pages.selectProduct.name": "Z-Wave Product",
     "pages.selectProduct.sections.productInfo.name": "Z-Wave Info",
     "pages.selectProduct.settings.selectedZwaveDevice.name": "Selected Device",

@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { DynamoDB } from 'aws-sdk'
+import { memoize } from 'lodash'
 
 export interface ManufacturerHex {
     productTypeId: string
@@ -109,8 +111,47 @@ export interface ZWaveInfo {
     Supports_SmartStart: boolean
 }
 
+export interface ProductIdMap extends ManufacturerHex {
+    zWaveId: number
+}
+
+class ProductMapService {
+    readonly ZWAVE_PRODUCT_TABLE = process.env.zwave_product_map_table || 'zwave_product_map'
+
+    private _db(): DynamoDB {
+        return new DynamoDB()
+    }
+    db = memoize(this._db)
+    async save(zwInfo: ZWaveInfo) {
+        const record: ProductIdMap = {
+            productId: zwInfo.ProductId,
+            productTypeId: zwInfo.ProductTypeId,
+            manufacturerId: zwInfo.ManufacturerId,
+            zWaveId: zwInfo.Id
+        }
+        const dynamoRecord = DynamoDB.Converter.marshall(record)
+        await this.db().putItem({
+            Item: dynamoRecord,
+            TableName: this.ZWAVE_PRODUCT_TABLE
+        }).promise()
+    }
+    async get(manufacturer: ManufacturerHex): Promise<ProductIdMap> {
+        const key = DynamoDB.Converter.marshall(manufacturer)
+        const resp = await this.db().getItem({
+            TableName: this.ZWAVE_PRODUCT_TABLE,
+            Key: key
+        }).promise()
+        if (resp.Item) {
+            return <ProductIdMap>DynamoDB.Converter.unmarshall(resp.Item)
+        } else {
+            throw new Error('Product Not Found')
+        }
+    }
+}
+
+export const productService = new ProductMapService()
+
 export class ZwaveDevice {
-    private zwaveInfo?: ZWaveInfo
     constructor(readonly zwaveProductId: number) {
 
     }
@@ -143,19 +184,30 @@ export class ZwaveDevice {
             return `https://products.z-wavealliance.org/ProductManual/File?folder=&filename=${manualDocuments[0].value}`
         }
     }
-    
-    async deviceInfo(): Promise<ZWaveInfo> {
-        if (!this.zwaveInfo) {
-            const url = `https://products.z-wavealliance.org/products/${this.zwaveProductId}/JSON`
-            const resp = await axios.get<ZWaveInfo>(url)
-            this.zwaveInfo = resp.data
-        }
-        return this.zwaveInfo
+
+    private async _deviceInfo(): Promise<ZWaveInfo> {
+        const url = `https://products.z-wavealliance.org/products/${this.zwaveProductId}/JSON`
+        const resp = await axios.get<ZWaveInfo>(url)
+        return resp.data
     }
 
+    deviceInfo = memoize(this._deviceInfo.bind(this))
+
+    async configurationParameter(parameter: number): Promise<ConfigurationParameter> {
+        const info = await this.deviceInfo()
+        const found = info.ConfigurationParameters.filter(configParameter => parameter == configParameter.ParameterNumber)
+        if (found && found.length) {
+            return found[0]
+        }
+        throw new Error(`Invalid Parameter ${parameter}`)
+    }
     static async zwaveAllianceProductId(manufacturer: ManufacturerHex): Promise<number> {
-        //TODO: update to retrieve from dynamodb
-        //TODO: throw error when not found
-        return 3600
+        const product = await productService.get(manufacturer)
+        return product.zWaveId
+    }
+
+    async saveProductIdMap() {
+        const zwInfo = await this.deviceInfo()
+        await productService.save(zwInfo)
     }
 }

@@ -2,7 +2,7 @@ import { InstalledAppConfiguration } from '@smartthings/core-sdk'
 import { Page, Section, SmartApp, SmartAppContext } from '@smartthings/smartapp'
 import { AppEvent } from '@smartthings/smartapp/lib/lifecycle-events'
 import { Initialization } from '@smartthings/smartapp/lib/util/initialization'
-import { inRange } from 'lodash'
+import { groupBy, inRange, keys, values } from 'lodash'
 import { Manufacturer, ZWaveConfigurationCapability, ZWaveDeviceState } from './capability'
 import appConfig from './config'
 import { contextStoreCreator } from './contextStore'
@@ -11,6 +11,7 @@ import { memoize } from 'lodash'
 
 
 const ZWAVE_DEVICE = 'selectedZwaveDevice'
+const PRODUCT_ID = 'zwaveProductId'
 
 interface AppState {
     zwaveProductId: number
@@ -29,10 +30,10 @@ async function retrieveZWaveDeviceWithState(context: SmartAppContext): Promise<Z
     throw new Error('Context not authenticated')
 }
 
-async function retrieveZwaveCapability(context: SmartAppContext): Promise<ZWaveConfigurationCapability> {
+async function retrieveZwaveCapability(context: SmartAppContext, zwDevice: ZwaveDevice): Promise<ZWaveConfigurationCapability> {
     if (context.isAuthenticated()) {
         const configDevice = context.config[ZWAVE_DEVICE]
-        return new ZWaveConfigurationCapability(configDevice, context.api.devices, context.api.subscriptions)
+        return new ZWaveConfigurationCapability(configDevice, context.api.devices, context.api.subscriptions, zwDevice)
     }
     throw new Error('Context not authenticated')
 }
@@ -81,7 +82,7 @@ class PageManager {
         const associationGroups = zwaveInfo.AssociationGroups
         if (associationGroups && associationGroups.length) {
             page.section('AssociationGroups', section => {
-                section.hidden(true)
+                section.hidden(false)
                 section.hideable(true)
                 associationGroups.forEach(associationGroup => {
                     const pageName = this.associationGroupPageName(associationGroup.GroupNumber)
@@ -103,9 +104,9 @@ class PageManager {
         const configurationParameters = zwaveInfo.ConfigurationParameters
         if (configurationParameters && configurationParameters.length) {
             page.section('ConfigurationParameters', section => {
-                section.hidden(true)
+                section.hidden(false)
                 section.hideable(true)
-                //TODO: Add instructions to select to view/configure
+                section.paragraphSetting('parameterInstructions')
                 configurationParameters.forEach(configurationParameter => {
                     const pageName = this.parameterPageName(configurationParameter.ParameterNumber)
                     section.pageSetting(pageName)
@@ -139,85 +140,119 @@ class PageManager {
         }
         throw new Error('Product Id not found')
     }
-    private async parameterSection(configurationParameter: ConfigurationParameter, page: Page, context: SmartAppContext, configData?: InstalledAppConfiguration): Promise<void> {
+    private async parameterSection(configurationParameter: ConfigurationParameter, page: Page,
+        context: SmartAppContext, configData?: InstalledAppConfiguration): Promise<void> {
 
-        if (configData){
-            context = await smartAppCreator.installedSmartAppContext(configData.installedAppId)
+        let authContext = context
+        if (configData) {
+            authContext = await smartAppCreator.installedSmartAppContext(configData.installedAppId)
         }
-        const device = await retrieveZWaveDeviceWithState(context)
-        //TODO: Change parameter to use a single page that shows all an enum with available parameters and current value
+        const device = await retrieveZWaveDeviceWithState(authContext)
         page.section('parameter', section => {
             page.name("Configuration")
             section.name(`Configure Parameter ${configurationParameter.ParameterNumber}`)
-            section.paragraphSetting('name')
-                .name(configurationParameter.Name)
-                .description(configurationParameter.Description)
+
+            const description = configurationParameter.Description
+            const name = configurationParameter.Name
+            const valueName = `parameter${configurationParameter.ParameterNumber}`
+
+            section.booleanSetting(`${valueName}Virtual`)
+                .name('Virtual Device')
+                .description('Create a virtual device to use in automations')
 
             const values = configurationParameter.ConfigurationParameterValues
             const currentConfigurations = device.getCurrentConfigurations()
             const currentValue = currentConfigurations[configurationParameter.ParameterNumber]
             const defaultValue = currentValue != undefined ? currentValue : configurationParameter.DefaultValue
-            const useEnum = values.map(parameter => {
-                return parameter.From == parameter.To
-            }).filter(value => !value).length == 0
 
-            const description = `Set the desired value`
-            const name = `Device value ${currentValue}`
-            if (useEnum) {
-                const options = values.map(value => {
-                    return {
-                        id: value.From.toString(),
-                        name: value.DescriptionJSONSafe
-                    }
-                })
-                section.enumSetting('parameterValue')
-                    .translateOptions(false)
-                    .options(options)
-                    .defaultValue(defaultValue)
-                    .description(description)
+
+            if (context.configBooleanValue(`${valueName}Virtual`)) {
+                section.paragraphSetting(valueName)
                     .name(name)
+                    .description(description)
+                section.paragraphSetting('parameterVirtualEnabled')
+                    .name('Use the virtual device to configure')
+                    .description('')
             } else {
-                values.forEach((value, index) => {
-                    if (value.From == value.To) {
-                        const component = section.booleanSetting('parameterDefaultEnabled')
-                            .name(value.DescriptionJSONSafe)
-                            .description('Disable to specify a value')
-                            .submitOnChange(true)
-                            .description(description)
-                            .name(name)
-                        if (defaultValue == value.From) {
-                            component.defaultValue(defaultValue)
+                const defaultEnabled = context.configBooleanValue(`${valueName}Default`)
+                let optionDefault = false
+                const options = values
+                    .filter(value => value.To == value.From)
+                    .map(value => {
+                        const defaultOption = currentValue == value.From
+                        const deviceValueDesc = defaultOption ? ' *' : ''
+                        optionDefault ||= defaultOption
+                        return {
+                            id: value.From.toString(),
+                            name: `${value.DescriptionJSONSafe}${deviceValueDesc}`
                         }
-                    } else {
-                        let component = section.numberSetting('parameterValue')
-                            .min(value.From)
-                            .max(value.To)
-                            .step(1)
-                            .description(description)
-                            .name(name)
-                        if (inRange(defaultValue, value.From, value.To + 1)) {
-                            component = component.defaultValue(defaultValue)
-                        }
-                        // Disable if multiple values and the parameterDefaultEnabled is true
-                        component.disabled(!(
-                            index == 0 ||
-                            (index > 0 && context.configBooleanValue('parameterDefaultEnabled'))
-                        ))
+                    })
+                const multipleValueComponents = options.length != values.length
+
+                if (options.length == 1) {
+                    const option = options[0]
+                    const component = section.booleanSetting(`${valueName}Boolean`)
+                        .name(option.name)
+                        .description('Disable to specify a value')
+                        .submitOnChange(true)
+                        .description(description)
+                        .name(name)
+                        .disabled(defaultEnabled)
+                    if (defaultValue == Number(option.id)) {
+                        component.defaultValue('true')
                     }
-                })
+
+                } else if (options.length > 1) {
+                    const component = section.enumSetting(`${valueName}Enum`)
+                        .translateOptions(false)
+                        .options(options)
+                        .description(description)
+                        .name(name)
+                        .submitOnChange(multipleValueComponents)
+                        .disabled(defaultEnabled)
+                    if (optionDefault) {
+                        component.defaultValue(defaultValue)
+                    }
+                }
+
+                if (multipleValueComponents) {
+                    values.filter(value => value.To != value.From)
+                        .forEach(value => {
+                            let component = section.numberSetting(`${valueName}Number`)
+                                .min(value.From)
+                                .max(value.To)
+                                .step(1)
+                                .description(description)
+                                .name(name)
+                            if (inRange(defaultValue, value.From, value.To + 1)) {
+                                component = component.defaultValue(defaultValue)
+                            }
+
+                            // Disable if multiple values and the Boolean or Enum is set
+                            const disabled = !(
+                                options.length == 0 ||
+                                (options.length > 0
+                                    && (context.configBooleanValue(`${valueName}Boolean`)
+                                        || context.configStringValue(`${valueName}Enum`)
+                                    )
+                                )
+                            )
+                            component.disabled(disabled || defaultEnabled)
+
+                            if (disabled) {
+                                section.paragraphSetting('disabledParameter')
+                                    .name('Selection disabled')
+                                    .description('Set to false to specify')
+                            }
+                        })
+                }
+
+                section.booleanSetting(`${valueName}Default`)
+                    .submitOnChange(true)
+                    .name('Reset to default')
+                    .description(`Update to ${configurationParameter.DefaultValue}`)
+                    .disabled(currentValue == configurationParameter.DefaultValue)
             }
-
-
-            section.booleanSetting('defaultValue')
-                .submitOnChange(true)
-                .name('Reset to default')
-                .description(`Update to ${configurationParameter.DefaultValue}`)
-                .disabled(currentValue == configurationParameter.DefaultValue)
-
-
-            section.booleanSetting(`parameterDevice${configurationParameter.ParameterNumber}`)
-                .name('Virtual Device')
-                .description('Create a virtual device to use in automations')
         })
 
     }
@@ -359,8 +394,6 @@ class PageManager {
             .disabled(disabled)
     }
     private missingProductSection(page: Page, err: Error) {
-        //TODO: Change to display input for entering product id and a link/instructions
-        // Can download/update manufacturer to product id mapping based on input
         console.log(err)
         page.section('missingProduct', section => {
             section.name('Missing Product')
@@ -413,9 +446,9 @@ class PageManager {
             section.paragraphSetting('productId')
                 .description(manufacturerHex.productId)
         })
-        page.section('zwaveProductId', section => {
+        page.section(PRODUCT_ID, section => {
             section.paragraphSetting('instructions')
-            section.numberSetting('zwaveProductId')
+            section.numberSetting(PRODUCT_ID)
                 .step(1)
                 .min(1)
                 .max(12000)
@@ -441,9 +474,29 @@ class PageManager {
     }
 }
 
+interface ParameterConfig {
+    parameter: number
+    numberValue?: number
+    enumValue?: number
+    booleanValue?: boolean
+    virtualDevice: boolean
+    resetDefault: boolean
+}
+
+interface IndexedParameters {
+    [key: number]: ParameterConfig
+}
+
+enum ParameterConfigTypes {
+    Number = 'Number',
+    Enum = 'Enum',
+    Boolean = 'Boolean',
+    Virtual = 'Virtual',
+    Default = 'Default'
+}
 class SmartAppCreator {
     private readonly pageManager = new PageManager()
-
+    private parameterRegex = /^parameter(?<parameter>\d{1,3})(?<type>Number|Enum|Boolean|Virtual|Default)$/
     async clientConfig(): Promise<SmartApp> {
         const config = await appConfig()
         return new SmartApp({
@@ -454,13 +507,128 @@ class SmartAppCreator {
     }
 
     async installHandler(context: SmartAppContext, installData: AppEvent.InstallData): Promise<void> {
-        const deviceCapabilty = await retrieveZwaveCapability(context)
+        const deviceCapabilty = await retrieveZwaveCapability(context, new ZwaveDevice(-1))
         const manuSub = await context.api.subscriptions.subscribeToDevices(deviceCapabilty.deviceConfigEntry,
             ZWaveConfigurationCapability.CAPABILITY_ID,
             'manufacturer', 'manufacturerEvent')
         const status = await deviceCapabilty.refreshManufacturer()
     }
 
+    async updateHandler(context: SmartAppContext, updateData: AppEvent.UpdateData): Promise<void> {
+        const zwaveProductId = context.configNumberValue(PRODUCT_ID)
+        if (zwaveProductId) {
+            await this.updateProductState(zwaveProductId, context, updateData.installedApp.installedAppId)
+        } else {
+            const zwaveProductId = await this.pageManager.zwaveProductId(updateData.installedApp.installedAppId)
+            const zwDevice = new ZwaveDevice(zwaveProductId)
+            await this.updateParameters(context, zwDevice)
+        }
+    }
+
+    private async updateParameters(context: SmartAppContext, zwDevice: ZwaveDevice) {
+        const parameterConfigs = keys(context.config).map(key => {
+            const matches = this.parameterRegex.exec(key)
+            if (matches && matches.groups) {
+                const type = <ParameterConfigTypes>matches.groups.type
+                const parameter = Number(matches.groups.parameter)
+                const ret: ParameterConfig = {
+                    parameter,
+                    resetDefault: type == ParameterConfigTypes.Default && context.configBooleanValue(key),
+                    virtualDevice: type == ParameterConfigTypes.Virtual && context.configBooleanValue(key),
+                    booleanValue: type == ParameterConfigTypes.Boolean && context.configBooleanValue(key),
+                    numberValue: type == ParameterConfigTypes.Number
+                        ? context.configNumberValue(key)
+                        : undefined,
+                    enumValue: type == ParameterConfigTypes.Enum
+                        ? context.configNumberValue(key)
+                        : undefined
+                }
+                return ret
+            }
+        })
+            .filter(keyVal => keyVal != undefined)
+            .reduce((prev, curr) => {
+                if (curr) {
+                    let par = prev[curr.parameter]
+                    if (!par) {
+                        prev[curr.parameter] = curr
+                    } else {
+                        par.resetDefault ||= curr.resetDefault
+                        par.virtualDevice ||= curr.virtualDevice
+                        par.numberValue ||= curr.numberValue
+                        par.enumValue ||= curr.enumValue
+                        par.booleanValue ||= curr.booleanValue
+                    }
+                }
+                return prev
+            }, {} as IndexedParameters)
+
+        const updates = values(parameterConfigs).map(async (parameterConfig) => {
+            if (parameterConfig) {
+                if (parameterConfig.virtualDevice) {
+                    //TODO: Create default device
+                } else if (parameterConfig.resetDefault || parameterConfig.numberValue || parameterConfig.enumValue || parameterConfig.booleanValue) {
+                    try {
+                        const config = await zwDevice.configurationParameter(parameterConfig.parameter)
+                        let value = parameterConfig.enumValue || parameterConfig.numberValue
+                        if (parameterConfig.booleanValue) {
+                            value = config.ConfigurationParameterValues
+                                .filter(config => config.From == config.To)[0].From
+                        } else if (parameterConfig.resetDefault) {
+                            value = config.DefaultValue
+                        }
+                        const zwaveDevice = await retrieveZWaveDeviceWithState(context)
+                        const currentConfigs = zwaveDevice.getCurrentConfigurations()
+                        const currentValue = currentConfigs[parameterConfig.parameter]
+                        if (currentValue != value) {
+                            const zwCapability = await retrieveZwaveCapability(context, zwDevice)
+                            await zwCapability.updateConfiguration(parameterConfig.parameter, parameterConfig.resetDefault, value, config.Size)
+                        }
+
+                    } catch (err) {
+                        console.log(err)
+                    }
+                }
+            }
+        })
+        await Promise.all(updates)
+    }
+
+    private async updateProductState(zwaveProductId: number, context: SmartAppContext, installedAppId: string) {
+        const zwDevice = new ZwaveDevice(zwaveProductId)
+        const deviceInfo = await zwDevice.deviceInfo()
+        const zwaveDevice = await retrieveZWaveDeviceWithState(context)
+        const manufacturer = zwaveDevice.getManufacturerInfo()
+        const manufacturerHex = ZWaveConfigurationCapability.toManufacturerHex(manufacturer)
+        if (deviceInfo.ProductId == manufacturerHex.productId
+            && deviceInfo.ManufacturerId == manufacturerHex.manufacturerId
+            && deviceInfo.ProductTypeId == manufacturerHex.productTypeId) {
+            await zwDevice.saveProductIdMap()
+            await this.saveStateSupportedConfigurations(context, {
+                zwaveProductId
+            }, installedAppId)
+        } else {
+            throw new Error('Device does not match zWaveProduct')
+        }
+    }
+
+    async saveStateSupportedConfigurations(context: SmartAppContext, state: AppState, installedAppId: string) {
+        await this.saveState(state, installedAppId)
+        const zwCapability = await retrieveZwaveCapability(context, new ZwaveDevice(state.zwaveProductId))
+        await zwCapability.supportedConfigurations()
+    }
+
+    async saveState(state: AppState, installedAppId: string) {
+        const contextStore = contextStoreCreator.createContextStore()
+        await contextStore.update(installedAppId, {
+            state
+        })
+
+    }
+    private installIdFromContext(context: SmartAppContext): string {
+        const contextWId = <SmartAppContextWithInstalledId>context
+        return contextWId.installedAppId
+    }
     async manufacturerEventHandler(
         context: SmartAppContext,
         eventData: AppEvent.DeviceEvent,
@@ -469,17 +637,12 @@ class SmartAppCreator {
         const manufacturerHex = ZWaveConfigurationCapability.toManufacturerHex(manufacturer)
         try {
             const zwaveProductId = await ZwaveDevice.zwaveAllianceProductId(manufacturerHex)
-            const state: AppState = {
+            const installedAppId = this.installIdFromContext(context)
+            await this.saveStateSupportedConfigurations(context, {
                 zwaveProductId
-            }
-            const contextStore = contextStoreCreator.createContextStore()
-            const contextWId = <SmartAppContextWithInstalledId>context
-            const installedAppId = contextWId.installedAppId
-            contextStore.update(installedAppId, {
-                state
-            })
+            }, installedAppId)
         } catch (err) {
-            console.log('Error %j', err)
+            console.log('Error ', err)
         }
 
     }
@@ -501,6 +664,7 @@ class SmartAppCreator {
             .configureI18n()
             .installed(this.installHandler.bind(this))
             .initialized(this.initialized.bind(this))
+            .updated(this.updateHandler.bind(this))
             .subscribedEventHandler('manufacturerEvent', this.manufacturerEventHandler.bind(this))
     }
 
@@ -516,3 +680,11 @@ class SmartAppCreator {
 }
 
 export const smartAppCreator = new SmartAppCreator()
+
+//TODO: Device auto create
+/**
+ * Capability
+ * Device Profile uses capability and lists components
+ * Device requires profile id
+ * MISSING: How to map presentation to profile
+ */

@@ -1,0 +1,75 @@
+{
+    "lifecycle": "UPDATE",
+    "executionId": "00000000-0000-0000-0000-000000000000",
+    "appId": "myAppId",
+    "locale": "en",
+    "version": "0.1.0",
+    "client": {
+        "os": "android",
+        "version": "1.7.67.29",
+        "language": "en",
+        "displayMode": "LIGHT",
+        "timeZoneOffset": "",
+        "supportedTemplates": [],
+        "samsungAccountId": ""
+    },
+    "updateData": {
+        "authToken": "authToken",
+        "refreshToken": "refreshToken",
+        "installedApp": {
+            "installedAppId": "installedAppIdWithProduct",
+            "locationId": "myLocationId",
+            "config": {
+                "selectedZwaveDevice": [
+                    {
+                        "valueType": "DEVICE",
+                        "deviceConfig": {
+                            "deviceId": "myDeviceId",
+                            "componentId": "main"
+                        }
+                    }
+                ],
+                "parameter2Enum": [
+                    {
+                        "valueType": "STRING",
+                        "stringConfig": {
+                            "value": "3"
+                        }
+                    }
+                ],
+                "parameter2Virtual": [
+                    {
+                        "valueType": "STRING",
+                        "stringConfig": {
+                            "value": "false"
+                        }
+                    }
+                ],
+                "parameter2Default": [
+                    {
+                        "valueType": "STRING",
+                        "stringConfig": {
+                            "value": "false"
+                        }
+                    }
+                ]
+            },
+            "permissions": [
+                "r:devices:00000000-0000-0000-0000-000000000000",
+                "x:devices:00000000-0000-0000-0000-000000000000"
+            ]
+        }
+    },
+    "previousConfig": {
+        "selectedZwaveDevice": [
+            {
+                "valueType": "DEVICE",
+                "deviceConfig": {
+                    "deviceId": "myDeviceId",
+                    "componentId": "main"
+                }
+            }
+        ]
+    },
+    "settings": {}
+}

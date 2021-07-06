@@ -41,6 +41,7 @@ Resources:
       Environment:
         Variables:
           context_store_table: !Select [1, !Split [ "/", !GetAtt SmartThingsContextStore.Arn]]
+          zwave_product_map_table: !Select [1, !Split [ "/", !GetAtt ZWaveProductMap.Arn]]
   SmartAppLibLayer:
     Type: 'AWS::Serverless::LayerVersion'
     Properties:
@@ -95,6 +96,33 @@ Resources:
       KeySchema:
         - 
           AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+  ZWaveProductMap:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: !Sub ${AWS::StackName}-ZWaveProductMap
+      AttributeDefinitions:
+        -
+          AttributeName: ManufacturerId
+          AttributeType: S
+        -
+          AttributeName: ProductId
+          AttributeType: S
+        -
+          AttributeName: ProductTypeId
+          AttributeType: S
+      KeySchema:
+        - 
+          AttributeName: ManufacturerId
+          KeyType: HASH
+        - 
+          AttributeName: ProductId
+          KeyType: HASH
+        - 
+          AttributeName: ProductTypeId
           KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 5

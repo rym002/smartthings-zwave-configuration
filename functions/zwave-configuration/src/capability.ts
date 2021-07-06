@@ -1,5 +1,5 @@
 import { DeviceStateContext } from '@smartthings/smartapp'
-import { ManufacturerHex } from './deviceInfo'
+import { ManufacturerHex, ZwaveDevice } from './deviceInfo'
 import { mapValues } from 'lodash'
 import { DevicesEndpoint, SubscriptionsEndpoint, Status, ConfigEntry, Subscription, DeviceConfig, ConfigValueType } from '@smartthings/core-sdk'
 
@@ -73,7 +73,7 @@ export class ZWaveDeviceState {
 export class ZWaveConfigurationCapability {
     static CAPABILITY_ID = 'benchlocket65304.zwaveConfiguration'
     private readonly deviceConfig: DeviceConfig
-    constructor(readonly deviceConfigEntry: ConfigEntry[], readonly devicesEndpoint: DevicesEndpoint, readonly subscriptionsEndpoint: SubscriptionsEndpoint) {
+    constructor(readonly deviceConfigEntry: ConfigEntry[], readonly devicesEndpoint: DevicesEndpoint, readonly subscriptionsEndpoint: SubscriptionsEndpoint, readonly zwDevice: ZwaveDevice) {
         if (deviceConfigEntry && deviceConfigEntry[0].deviceConfig) {
             this.deviceConfig = deviceConfigEntry[0].deviceConfig
         } else {
@@ -92,7 +92,7 @@ export class ZWaveConfigurationCapability {
         return ret
     }
     private static toPaddedHex(value: number): string {
-        return value.toString(16).padStart(4, '0')
+        return '0x' + value.toString(16).padStart(4, '0')
     }
     async refreshManufacturer(): Promise<Status> {
         const command: Command = {
@@ -100,14 +100,20 @@ export class ZWaveConfigurationCapability {
         }
         return this.executeCommand(command)
     }
-    async supportedConfigurations(parameters: number[]): Promise<Status> {
+    async supportedConfigurations(): Promise<Status> {
+        const zwInfo = await this.zwDevice.deviceInfo()
+        const parameters = zwInfo.ConfigurationParameters.map(cp => cp.ParameterNumber)
         const command: Command = {
             command: 'supportedConfigurations',
             args: [parameters]
         }
         return this.executeCommand(command)
     }
-    async updateConfiguration(parameterNumber: number, configurationValue: number[], defaultValue: boolean): Promise<Status> {
+    async updateConfiguration(parameterNumber: number, defaultValue: boolean, value?: number, size?: number): Promise<Status> {
+        let configurationValue: number[] = []
+        if (value != undefined && size) {
+            configurationValue = this.toParameterValue(value, size)
+        }
         const command: Command = {
             command: 'updateConfiguration',
             args: [parameterNumber, configurationValue, defaultValue ? 1 : 0]

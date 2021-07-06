@@ -12,23 +12,23 @@
                     "name": "Configure Parameter 2",
                     "settings": [
                         {
-                            "id": "name",
+                            "id": "parameter2Virtual",
                             "required": false,
-                            "type": "PARAGRAPH",
-                            "name": "Enum Parameter",
-                            "description": ""
+                            "type": "BOOLEAN",
+                            "name": "Virtual Device",
+                            "description": "Create a virtual device to use in automations"
                         },
                         {
-                            "id": "parameterValue",
+                            "id": "parameter2Enum",
                             "required": false,
                             "type": "ENUM",
-                            "name": "Device value 1",
-                            "description": "Set the desired value",
-                            "defaultValue": "1",
+                            "name": "Enum Parameter",
+                            "description": "",
+                            "defaultValue": "0",
                             "options": [
                                 {
                                     "id": "0",
-                                    "name": "Disable"
+                                    "name": "Disable *"
                                 },
                                 {
                                     "id": "1",
@@ -37,19 +37,13 @@
                             ]
                         },
                         {
-                            "id": "defaultValue",
+                            "id": "parameter2Default",
                             "required": false,
                             "type": "BOOLEAN",
                             "name": "Reset to default",
                             "description": "Update to 0",
+                            "disabled": true,
                             "submitOnChange": true
-                        },
-                        {
-                            "id": "parameterDevice2",
-                            "required": false,
-                            "type": "BOOLEAN",
-                            "name": "Virtual Device",
-                            "description": "Create a virtual device to use in automations"
                         }
                     ]
                 }

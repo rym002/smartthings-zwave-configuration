@@ -529,15 +529,32 @@ class SmartAppCreator {
         const status = await deviceCapabilty.refreshManufacturer()
     }
 
+    async updateDevice(context: SmartAppContext, zwaveProductId: number) {
+        const zwDevice = new ZwaveDevice(zwaveProductId)
+        await this.updateParameters(context, zwDevice)
+    }
     async updateHandler(context: SmartAppContext, updateData: AppEvent.UpdateData): Promise<void> {
         const zwaveProductId = context.configNumberValue(PRODUCT_ID)
         if (zwaveProductId) {
-            await this.updateProductState(zwaveProductId, context, updateData.installedApp.installedAppId)
+            try {
+                const installedProductId = await this.pageManager.zwaveProductId(updateData.installedApp.installedAppId)
+                if (installedProductId != zwaveProductId) {
+                    throw new Error('Product If Mismatched')
+                } else {
+                    await this.updateDevice(context, zwaveProductId)
+                }
+            } catch (err) {
+                await this.updateProductState(zwaveProductId, context, updateData.installedApp.installedAppId)
+            }
         } else {
-            const zwaveProductId = await this.pageManager.zwaveProductId(updateData.installedApp.installedAppId)
-            const zwDevice = new ZwaveDevice(zwaveProductId)
-            await this.updateParameters(context, zwDevice)
+            try {
+                const installedProductId = await this.pageManager.zwaveProductId(updateData.installedApp.installedAppId)
+                await this.updateDevice(context, installedProductId)
+            } catch (err) {
+                console.log(err)
+            }
         }
+
     }
 
     private async updateParameters(context: SmartAppContext, zwDevice: ZwaveDevice) {

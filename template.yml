@@ -131,6 +131,7 @@ Resources:
               - dynamodb:DeleteItem
             Resource:
               - !GetAtt SmartThingsContextStore.Arn
+              - !GetAtt ZWaveProductMap.Arn
           -
             Effect: Allow
             Action: 

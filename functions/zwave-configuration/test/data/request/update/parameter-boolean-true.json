@@ -29,7 +29,7 @@
                         }
                     }
                 ],
-                "parameter3Number": [
+                "parameter5Number": [
                     {
                         "valueType": "STRING",
                         "stringConfig": {
@@ -37,7 +37,7 @@
                         }
                     }
                 ],
-                "parameter3Boolean": [
+                "parameter5Boolean": [
                     {
                         "valueType": "STRING",
                         "stringConfig": {
@@ -45,7 +45,7 @@
                         }
                     }
                 ],
-                "parameter3Virtual": [
+                "parameter5Virtual": [
                     {
                         "valueType": "STRING",
                         "stringConfig": {
@@ -53,7 +53,7 @@
                         }
                     }
                 ],
-                "parameter3Default": [
+                "parameter5Default": [
                     {
                         "valueType": "STRING",
                         "stringConfig": {

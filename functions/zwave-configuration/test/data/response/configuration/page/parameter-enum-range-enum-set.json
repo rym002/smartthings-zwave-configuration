@@ -40,12 +40,20 @@
                             "id": "parameter4Number",
                             "required": false,
                             "type": "NUMBER",
+                            "disabled": true,
                             "name": "Enum-Range Parameter",
                             "description": "",
                             "step": 1,
                             "min": 2,
                             "max": 99,
                             "defaultValue": "10"
+                        },
+                        {
+                            "description": "Set to false to specify",
+                            "id": "disabledParameter",
+                            "name": "Selection disabled",
+                            "required": false,
+                            "type": "PARAGRAPH"
                         },
                         {
                             "id": "parameter4Default",

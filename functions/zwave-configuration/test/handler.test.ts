@@ -109,11 +109,17 @@ describe('Test Test', () => {
                 it('should return parameter with enum', async () => {
                     await testRequest(`${folder}parameter-enum`)
                 })
-                it('should return return only boolean when the current value matches the boolean', async () => {
+                it('should return parameter with boolean and range with range disabled if boolean is default', async () => {
                     await testRequest(`${folder}parameter-boolean`)
                 })
-                it('should return parameter with boolean and range when the current', async () => {
+                it('should return parameter with boolean and range with range enabled if boolean is false', async () => {
+                    await testRequest(`${folder}parameter-boolean-false`)
+                })
+                it('should return parameter with enum and range with range enabled if enum undefined', async () => {
                     await testRequest(`${folder}parameter-enum-range`)
+                })
+                it('should return parameter with enum and range with range disabled if enum set', async () => {
+                    await testRequest(`${folder}parameter-enum-range-enum-set`)
                 })
                 it('should display device settings with virtual device enabled')
                 it('should disable device settings with default enabled', async () => {
@@ -203,7 +209,7 @@ describe('Test Test', () => {
                     }
                 ])
                 mockZwaveProduct(3600)
-                const supportedSpy = mockSupportedConfigurations([1,2,3,4])
+                const supportedSpy = mockSupportedConfigurations([1, 2, 3, 4, 5])
                 await testRequest(`${root}zwave-product-id`)
                 sandbox.assert.calledTwice(putItem)
                 expect(product_saved, 'ZWave Product Not Saved').to.eql(dev1Map)
@@ -238,7 +244,7 @@ describe('Test Test', () => {
                     commandMock.done()
                 })
                 it('should use boolean value if true', async function () {
-                    const commandMock = mockUpdateParameter(3, [0], false)
+                    const commandMock = mockUpdateParameter(5, [0], false)
                     await testRequest(`${root}parameter-boolean-true`)
                     commandMock.done()
                 })
@@ -283,7 +289,7 @@ describe('Test Test', () => {
                 productMapRetriever
             ])
             mockZwaveProduct(3600)
-            const supportedSpy = mockSupportedConfigurations([1,2,3,4])
+            const supportedSpy = mockSupportedConfigurations([1, 2, 3, 4, 5])
             await testRequest('event-manufacturer')
             sandbox.assert.calledOnce(updateSpy)
             supportedSpy.done()
@@ -368,8 +374,9 @@ function mockDeviceState(deviceId: string) {
                             value: {
                                 "1": [0],
                                 "2": [0],
-                                "3": [10],
-                                "4": [10]
+                                "3": [0],
+                                "4": [10],
+                                "5": [10]
                             },
                             timestamp: "2021-06-23T04:50:31.256Z"
                         },
@@ -416,7 +423,7 @@ function mockUpdateParameter(parameter: number, value: number[], defaultValue: b
 
 }
 
-function mockSupportedConfigurations(parameters:number[]){
+function mockSupportedConfigurations(parameters: number[]) {
     return mockCommand({
         capability: 'benchlocket65304.zwaveConfiguration',
         command: 'supportedConfigurations',

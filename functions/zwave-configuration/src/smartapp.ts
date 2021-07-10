@@ -19,6 +19,12 @@ interface AppState {
 interface SmartAppContextWithInstalledId extends SmartAppContext {
     installedAppId: string
 }
+
+enum ParameterMultiType {
+    NONE,
+    BOOLEAN,
+    ENUM
+}
 async function retrieveZWaveDeviceWithState(context: SmartAppContext): Promise<ZWaveDeviceState> {
     if (context.isAuthenticated()) {
         const devices = await context.configDevicesWithState(ZWAVE_DEVICE)
@@ -188,7 +194,8 @@ class PageManager {
                         }
                     })
                 const multipleValueComponents = options.length != values.length
-
+                let multiType: ParameterMultiType = ParameterMultiType.NONE
+                let multiValueDefault = false
                 if (options.length == 1) {
                     const option = options[0]
                     const component = section.booleanSetting(`${valueName}Boolean`)
@@ -198,10 +205,11 @@ class PageManager {
                         .description(description)
                         .name(name)
                         .disabled(defaultEnabled)
-                    if (defaultValue == Number(option.id)) {
+                    if (defaultValue == Number(option.id) && context.configStringValue(`${valueName}Boolean`) == undefined) {
                         component.defaultValue('true')
+                        multiValueDefault = true
                     }
-
+                    multiType = ParameterMultiType.BOOLEAN
                 } else if (options.length > 1) {
                     const component = section.enumSetting(`${valueName}Enum`)
                         .translateOptions(false)
@@ -212,7 +220,9 @@ class PageManager {
                         .disabled(defaultEnabled)
                     if (optionDefault) {
                         component.defaultValue(defaultValue)
+                        multiValueDefault = true
                     }
+                    multiType = ParameterMultiType.ENUM
                 }
 
                 if (multipleValueComponents) {
@@ -229,14 +239,19 @@ class PageManager {
                             }
 
                             // Disable if multiple values and the Boolean or Enum is set
-                            const disabled = !(
-                                options.length == 0 ||
-                                (options.length > 0
-                                    && (context.configBooleanValue(`${valueName}Boolean`)
-                                        || context.configStringValue(`${valueName}Enum`)
-                                    )
+                            const multipleOptions = options.length > 0
+                            const booleanExistsTrue = multipleOptions
+                                && multiType == ParameterMultiType.BOOLEAN
+                                && (
+                                    context.configBooleanValue(`${valueName}Boolean`)
+                                    || multiValueDefault
                                 )
-                            )
+                            const enumDefined = multipleOptions
+                                && multiType == ParameterMultiType.ENUM
+                                && context.configStringValue(`${valueName}Enum`) != undefined
+                            const disabled =
+                                booleanExistsTrue
+                                || enumDefined
                             component.disabled(disabled || defaultEnabled)
 
                             if (disabled) {

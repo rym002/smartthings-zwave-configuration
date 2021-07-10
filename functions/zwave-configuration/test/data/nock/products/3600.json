@@ -179,6 +179,34 @@
           "DescriptionJSONSafe": "Range"
         }
       ]
+    },
+    {
+      "Name": "Boolean-Range Parameter 2",
+      "Description": "",
+      "ParameterNumber": 5,
+      "Size": 1,
+      "DefaultValue": 0,
+      "pType": 0,
+      "flagReadOnly": false,
+      "flagReInclude": false,
+      "flagAdvanced": false,
+      "v3plus": false,
+      "minValue": 0,
+      "maxValue": 0,
+      "ConfigurationParameterValues": [
+        {
+          "From": 0,
+          "To": 0,
+          "Description": "Disable",
+          "DescriptionJSONSafe": "Disable"
+        },
+        {
+          "From": 1,
+          "To": 99,
+          "Description": "Range",
+          "DescriptionJSONSafe": "Range"
+        }
+      ]
     }
   ],
   "Features": [

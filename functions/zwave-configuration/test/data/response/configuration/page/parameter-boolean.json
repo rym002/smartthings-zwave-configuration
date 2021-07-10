@@ -20,6 +20,7 @@
                         },
                         {
                             "id": "parameter3Boolean",
+                            "defaultValue": "true",
                             "required": false,
                             "type": "BOOLEAN",
                             "name": "Boolean-Range Parameter",
@@ -35,8 +36,7 @@
                             "description": "",
                             "step": 1,
                             "min": 1,
-                            "max": 99,
-                            "defaultValue": "10"
+                            "max": 99
                         },
                         {
                             "description": "Set to false to specify",
@@ -49,6 +49,7 @@
                             "id": "parameter3Default",
                             "required": false,
                             "type": "BOOLEAN",
+                            "disabled": true,
                             "name": "Reset to default",
                             "description": "Update to 0",
                             "submitOnChange": true

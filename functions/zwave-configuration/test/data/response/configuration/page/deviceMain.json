@@ -101,6 +101,13 @@
                             "name": "Enum-Range Parameter",
                             "description": "",
                             "page": "parameter4"
+                        },
+                        {
+                            "description": "",
+                            "id": "parameter5",
+                            "name": "Boolean-Range Parameter 2",
+                            "page": "parameter5",
+                            "type": "PAGE"
                         }
                     ]
                 },

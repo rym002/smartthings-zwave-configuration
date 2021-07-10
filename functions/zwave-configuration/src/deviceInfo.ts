@@ -111,7 +111,10 @@ export interface ZWaveInfo {
     Supports_SmartStart: boolean
 }
 
-export interface ProductIdMap extends ManufacturerHex {
+export interface ProductIdKey {
+    id: string
+}
+export interface ProductIdMap extends ProductIdKey {
     zWaveId: number
 }
 
@@ -122,11 +125,10 @@ class ProductMapService {
         return new DynamoDB()
     }
     db = memoize(this._db)
+
     async save(zwInfo: ZWaveInfo) {
         const record: ProductIdMap = {
-            productId: zwInfo.ProductId,
-            productTypeId: zwInfo.ProductTypeId,
-            manufacturerId: zwInfo.ManufacturerId,
+            id: `${zwInfo.ManufacturerId}-${zwInfo.ProductTypeId}-${zwInfo.ProductId}`,
             zWaveId: zwInfo.Id
         }
         const dynamoRecord = DynamoDB.Converter.marshall(record)
@@ -136,7 +138,10 @@ class ProductMapService {
         }).promise()
     }
     async get(manufacturer: ManufacturerHex): Promise<ProductIdMap> {
-        const key = DynamoDB.Converter.marshall(manufacturer)
+        const idKey: ProductIdKey = {
+            id: `${manufacturer.manufacturerId}-${manufacturer.productTypeId}-${manufacturer.productId}`
+        }
+        const key = DynamoDB.Converter.marshall(idKey)
         const resp = await this.db().getItem({
             TableName: this.ZWAVE_PRODUCT_TABLE,
             Key: key

@@ -1,12 +1,12 @@
-import { Device, Command } from '@smartthings/core-sdk'
+import { Command, Device } from '@smartthings/core-sdk'
 import { assert, expect } from 'chai'
 import 'mocha'
 import * as nock from 'nock'
-import { FakeContext, getContextSandbox, ssmMock, getItemMock, updateItemMock, putItemMock } from 'st-mocha-mocks'
+import { FakeContext, getContextSandbox, getItemMock, putItemMock, ssmMock, updateItemMock } from 'st-mocha-mocks'
 import { handler } from '../src'
 import { contextStoreCreator } from '../src/contextStore'
+import { ProductIdKey, ProductIdMap, productService } from '../src/deviceInfo'
 import { smartAppCreator } from '../src/smartapp'
-import { ManufacturerHex, ProductIdMap, productService } from '../src/deviceInfo'
 
 
 
@@ -341,13 +341,11 @@ smartappContext.set(`ctx:${contextNoState.installedAppId}`, contextNoState)
 smartappContext.set(`ctx:${contextWithProductId.installedAppId}`, contextWithProductId)
 
 const dev1Map: ProductIdMap = {
-    manufacturerId: '0x0039',
-    productId: '0x3235',
-    productTypeId: '0x4944',
+    id: '0x0039-0x4944-0x3235',
     zWaveId: 3600
 }
 const zwaveProductMap = new Map<string, ProductIdMap>()
-zwaveProductMap.set(`${dev1Map.manufacturerId}${dev1Map.productTypeId}${dev1Map.productId}`, dev1Map)
+zwaveProductMap.set(`${dev1Map.id}`, dev1Map)
 
 function mockDeviceState(deviceId: string) {
     return nock(`https://api.smartthings.com/devices/${deviceId}`)
@@ -402,9 +400,9 @@ function smartappContextRetriever(tableName: string, key: ContextKey) {
     }
 }
 
-function productMapRetriever(tableName: string, key: ManufacturerHex) {
+function productMapRetriever(tableName: string, key: ProductIdKey) {
     if (tableName == 'zwave_product_map') {
-        return zwaveProductMap.get(`${key.manufacturerId}${key.productTypeId}${key.productId}`)
+        return zwaveProductMap.get(`${key.id}`)
     }
 }
 

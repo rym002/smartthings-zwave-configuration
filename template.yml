@@ -106,23 +106,11 @@ Resources:
       TableName: !Sub ${AWS::StackName}-ZWaveProductMap
       AttributeDefinitions:
         -
-          AttributeName: ManufacturerId
-          AttributeType: S
-        -
-          AttributeName: ProductId
-          AttributeType: S
-        -
-          AttributeName: ProductTypeId
+          AttributeName: id
           AttributeType: S
       KeySchema:
         - 
-          AttributeName: ManufacturerId
-          KeyType: HASH
-        - 
-          AttributeName: ProductId
-          KeyType: HASH
-        - 
-          AttributeName: ProductTypeId
+          AttributeName: id
           KeyType: HASH
       ProvisionedThroughput:
         ReadCapacityUnits: 5

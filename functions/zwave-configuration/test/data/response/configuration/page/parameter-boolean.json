@@ -3,7 +3,7 @@
     "configurationData": {
         "page": {
             "name": "Configuration",
-            "complete": false,
+            "complete": true,
             "pageId": "parameter3",
             "nextPageId": null,
             "previousPageId": "deviceMain",

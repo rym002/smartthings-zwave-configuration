@@ -2,12 +2,11 @@ import { InstalledAppConfiguration } from '@smartthings/core-sdk'
 import { Page, Section, SmartApp, SmartAppContext } from '@smartthings/smartapp'
 import { AppEvent } from '@smartthings/smartapp/lib/lifecycle-events'
 import { Initialization } from '@smartthings/smartapp/lib/util/initialization'
-import { groupBy, inRange, keys, values } from 'lodash'
+import { inRange, keys, memoize, values } from 'lodash'
 import { Manufacturer, ZWaveConfigurationCapability, ZWaveDeviceState } from './capability'
 import appConfig from './config'
 import { contextStoreCreator } from './contextStore'
 import { AssociationGroup, CommandClass, ConfigurationParameter, ZwaveDevice, ZWaveInfo } from './deviceInfo'
-import { memoize } from 'lodash'
 
 
 const ZWAVE_DEVICE = 'selectedZwaveDevice'
@@ -314,6 +313,7 @@ class PageManager {
                 this.missingConfig(page)
             }
             page.previousPageId('deviceMain')
+            page.complete(true)
         }
     }
     private missingConfig(page: Page) {
@@ -539,7 +539,7 @@ class SmartAppCreator {
             try {
                 const installedProductId = await this.pageManager.zwaveProductId(updateData.installedApp.installedAppId)
                 if (installedProductId != zwaveProductId) {
-                    throw new Error('Product If Mismatched')
+                    throw new Error('Product Id Mismatched')
                 } else {
                     await this.updateDevice(context, zwaveProductId)
                 }

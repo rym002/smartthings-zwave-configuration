@@ -16,7 +16,7 @@
     "configurationData": {
         "installedAppId": "installedAppIdWithProduct",
         "phase": "PAGE",
-        "pageId": "parameter3",
+        "pageId": "deviceMain",
         "previousPageId": "",
         "config": {
             "selectedZwaveDevice": [
@@ -25,6 +25,22 @@
                     "deviceConfig": {
                         "deviceId": "myDeviceId",
                         "componentId": "main"
+                    }
+                }
+            ],
+            "parameter4Default": [
+                {
+                    "valueType": "STRING",
+                    "stringConfig": {
+                        "value": "false"
+                    }
+                }
+            ],
+            "parameter4Enum": [
+                {
+                    "valueType": "STRING",
+                    "stringConfig": {
+                        "value": "0"
                     }
                 }
             ]

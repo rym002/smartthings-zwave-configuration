@@ -1,6 +1,6 @@
 {
-  "Id": 3600,
-  "Name": "In-Wall Smart Dimmer",
+  "Id": 23600,
+  "Name": "No Association Group Device",
   "Description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!",
   "Description_Short": "Honeywell In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. ",
   "Brand": "Honeywell",
@@ -50,22 +50,6 @@
     }
   ],
   "AssociationGroups": [
-    {
-      "Description": "Lifeline only",
-      "GroupNumber": 1,
-      "MaximumNodes": 1,
-      "endpoint_id": 0,
-      "group_name": "",
-      "profile": ""
-    },
-    {
-      "Description": "Multiple associations",
-      "GroupNumber": 2,
-      "MaximumNodes": 5,
-      "endpoint_id": 0,
-      "group_name": "Configurable Group",
-      "profile": ""
-    }
   ],
   "ConfigurationParameters": [
     {

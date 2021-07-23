@@ -126,10 +126,10 @@ class ProductMapService {
     }
     db = memoize(this._db)
 
-    async save(zwInfo: ZWaveInfo) {
+    async save(deviceManufacturerCode: string, productId: number) {
         const record: ProductIdMap = {
-            id: `${zwInfo.ManufacturerId}-${zwInfo.ProductTypeId}-${zwInfo.ProductId}`,
-            zWaveId: zwInfo.Id
+            id: deviceManufacturerCode,
+            zWaveId: productId
         }
         const dynamoRecord = DynamoDB.Converter.marshall(record)
         await this.db().putItem({
@@ -137,9 +137,9 @@ class ProductMapService {
             TableName: this.ZWAVE_PRODUCT_TABLE
         }).promise()
     }
-    async get(manufacturer: ManufacturerHex): Promise<ProductIdMap> {
+    async get(deviceManufacturerCode: string): Promise<ProductIdMap> {
         const idKey: ProductIdKey = {
-            id: `${manufacturer.manufacturerId}-${manufacturer.productTypeId}-${manufacturer.productId}`
+            id: deviceManufacturerCode
         }
         const key = DynamoDB.Converter.marshall(idKey)
         const resp = await this.db().getItem({
@@ -156,7 +156,7 @@ class ProductMapService {
 
 export const productService = new ProductMapService()
 
-export class ZwaveDevice {
+export class ZwaveDeviceInfo {
     constructor(readonly zwaveProductId: number) {
 
     }
@@ -198,6 +198,13 @@ export class ZwaveDevice {
 
     deviceInfo = memoize(this._deviceInfo.bind(this))
 
+    private toFlatHex(value: string): string {
+        return value.replace('0x', '')
+    }
+    public async deviceManufacturerCode(): Promise<string> {
+        const deviceInfo = await this.deviceInfo()
+        return `${this.toFlatHex(deviceInfo.ManufacturerId)}-${this.toFlatHex(deviceInfo.ProductTypeId)}-${this.toFlatHex(deviceInfo.ProductId)}`
+    }
     async configurationParameter(parameter: number): Promise<ConfigurationParameter> {
         const info = await this.deviceInfo()
         const found = info.ConfigurationParameters.filter(configParameter => parameter == configParameter.ParameterNumber)
@@ -206,13 +213,13 @@ export class ZwaveDevice {
         }
         throw new Error(`Invalid Parameter ${parameter}`)
     }
-    static async zwaveAllianceProductId(manufacturer: ManufacturerHex): Promise<number> {
-        const product = await productService.get(manufacturer)
+    static async zwaveAllianceProductId(deviceManufacturerCode: string): Promise<number> {
+        const product = await productService.get(deviceManufacturerCode)
         return product.zWaveId
     }
 
     async saveProductIdMap() {
-        const zwInfo = await this.deviceInfo()
-        await productService.save(zwInfo)
+        const deviceManufacturerCode = await this.deviceManufacturerCode()
+        await productService.save(deviceManufacturerCode, this.zwaveProductId)
     }
 }

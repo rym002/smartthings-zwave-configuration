@@ -14,9 +14,9 @@
         "samsungAccountId": ""
     },
     "configurationData": {
-        "installedAppId": "installedAppIdWithProduct",
+        "installedAppId": "installedAppIdNoS2CommandClasses",
         "phase": "PAGE",
-        "pageId": "parameter1",
+        "pageId": "deviceMain",
         "previousPageId": "",
         "config": {
             "selectedZwaveDevice": [
@@ -27,17 +27,9 @@
                         "componentId": "main"
                     }
                 }
-            ],
-            "parameter1Default": [
-                {
-                    "valueType": "STRING",
-                    "stringConfig": {
-                        "value": "true"
-                    }
-                }
             ]
         },
-        "isResubmit": true
+        "isResubmit": false
     },
     "settings": {}
 }

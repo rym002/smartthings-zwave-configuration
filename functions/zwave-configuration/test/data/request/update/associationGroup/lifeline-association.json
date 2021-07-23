@@ -17,23 +17,31 @@
         "authToken": "authToken",
         "refreshToken": "refreshToken",
         "installedApp": {
-            "installedAppId": "noProductInstalledAppId",
+            "installedAppId": "installedAppIdWithProduct",
             "locationId": "myLocationId",
             "config": {
                 "selectedZwaveDevice": [
                     {
                         "valueType": "DEVICE",
                         "deviceConfig": {
-                            "deviceId": "myDeviceId",
+                            "deviceId": "myLifelineDeviceId",
                             "componentId": "main"
                         }
                     }
                 ],
-                "zwaveProductId": [
+                "associationGroup2Associations": [
                     {
-                        "valueType": "STRING",
-                        "stringConfig": {
-                            "value": "3600"
+                        "valueType": "DEVICE",
+                        "deviceConfig": {
+                            "deviceId": "device1C",
+                            "componentId": "main"
+                        }
+                    },
+                    {
+                        "valueType": "DEVICE",
+                        "deviceConfig": {
+                            "deviceId": "device1D",
+                            "componentId": "main"
                         }
                     }
                 ]

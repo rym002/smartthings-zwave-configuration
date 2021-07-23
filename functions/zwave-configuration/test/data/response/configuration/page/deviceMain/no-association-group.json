@@ -17,6 +17,7 @@
                             "type": "DEVICE",
                             "name": "Selected Device",
                             "description": "Tap to set",
+                            "disabled": true,
                             "multiple": false,
                             "capabilities": [
                                 "benchlocket65304.zwaveConfiguration"
@@ -24,8 +25,7 @@
                             "permissions": [
                                 "r",
                                 "x"
-                            ],
-                            "disabled": true
+                            ]
                         }
                     ]
                 },
@@ -36,30 +36,30 @@
                             "id": "device",
                             "required": false,
                             "type": "PARAGRAPH",
-                            "name": "In-Wall Smart Dimmer",
+                            "name": "No Association Group Device",
                             "description": "Honeywell In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. "
                         }
                     ]
                 },
                 {
                     "name": "Device Detail",
-                    "hidden": true,
                     "hideable": true,
+                    "hidden": true,
                     "settings": [
                         {
                             "id": "detailName",
                             "required": false,
                             "type": "PARAGRAPH",
-                            "name": "In-Wall Smart Dimmer",
+                            "name": "No Association Group Device",
                             "description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!"
                         },
                         {
                             "id": "deviceImage",
-                            "image": "https://products.z-wavealliance.org/ProductImages/ProductImage?prod=3600&which=21",
                             "required": false,
                             "type": "IMAGE",
-                            "name": "In-Wall Smart Dimmer",
-                            "description": "In-Wall Smart Dimmer"
+                            "name": "No Association Group Device",
+                            "description": "No Association Group Device",
+                            "image": "https://products.z-wavealliance.org/ProductImages/ProductImage?prod=23600&which=21"
                         }
                     ]
                 },
@@ -68,80 +68,167 @@
                     "hideable": true,
                     "settings": [
                         {
-                            "description": "",
                             "id": "parameterInstructions",
-                            "name": "Click a parameter to configure",
                             "required": false,
-                            "type": "PARAGRAPH"
+                            "type": "PARAGRAPH",
+                            "name": "Configure device settings",
+                            "description": "Set device specific configurations"
                         },
                         {
-                            "id": "parameter1",
-                            "type": "PAGE",
-                            "name": "Range Parameter",
-                            "description": "Range Parameter Desc",
-                            "page": "parameter1"
-                        },
-                        {
-                            "id": "parameter2",
-                            "type": "PAGE",
-                            "name": "Enum Parameter",
-                            "description": "",
-                            "page": "parameter2"
-                        },
-                        {
-                            "id": "parameter3",
-                            "type": "PAGE",
-                            "name": "Boolean-Range Parameter",
-                            "description": "",
-                            "page": "parameter3"
-                        },
-                        {
-                            "id": "parameter4",
-                            "type": "PAGE",
-                            "name": "Enum-Range Parameter",
-                            "description": "",
-                            "page": "parameter4"
-                        },
-                        {
-                            "description": "",
-                            "id": "parameter5",
-                            "name": "Boolean-Range Parameter 2",
-                            "page": "parameter5",
-                            "type": "PAGE"
+                            "id": "parameterVirtual",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Virtual Configuration Device",
+                            "description": "Create a virtual device to support device configuration using automations"
                         }
                     ]
                 },
                 {
-                    "name": "Association Groups",
-                    "hideable": true,
+                    "name": "Range Parameter",
                     "settings": [
                         {
-                            "id": "associationGroup1Info",
-                            "type": "PARAGRAPH",
-                            "name": "Association Group 1",
-                            "description": "Lifeline only",
-                            "required": false
+                            "id": "parameter1Number",
+                            "required": false,
+                            "type": "NUMBER",
+                            "name": "Range Parameter",
+                            "description": "Range Parameter Desc",
+                            "defaultValue": "0",
+                            "max": 100,
+                            "step": 1
                         },
                         {
-                            "id": "associationGroup2Info",
+                            "id": "parameter1Default",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Reset parameter 1 to default",
+                            "description": "Update Parameter to 3",
+                            "defaultValue": "false",
+                            "submitOnChange": true
+                        }
+                    ]
+                },
+                {
+                    "name": "Enum Parameter",
+                    "settings": [
+                        {
+                            "id": "parameter2Desc",
+                            "required": false,
                             "type": "PARAGRAPH",
-                            "name": "Association Group 2",
-                            "description": "Multiple associations",
-                            "required": false
+                            "name": "Enum Parameter",
+                            "description": ""
                         },
                         {
+                            "id": "parameter2Default",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Reset parameter 2 to default",
+                            "description": "Update Parameter to 0",
+                            "defaultValue": "true",
+                            "submitOnChange": true
+                        }
+                    ]
+                },
+                {
+                    "name": "Boolean-Range Parameter",
+                    "settings": [
+                        {
+                            "id": "parameter3Desc",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Boolean-Range Parameter",
+                            "description": ""
+                        },
+                        {
+                            "id": "parameter3Default",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Reset parameter 3 to default",
+                            "description": "Update Parameter to 0",
+                            "defaultValue": "true",
+                            "submitOnChange": true
+                        }
+                    ]
+                },
+                {
+                    "name": "Enum-Range Parameter",
+                    "settings": [
+                        {
+                            "id": "parameter4Enum",
+                            "required": false,
+                            "type": "ENUM",
+                            "name": "Enum-Range Parameter",
                             "description": "",
-                            "id": "associationGroup2Configure",
-                            "name": "Configure Association Group 2",
-                            "page": "associationGroup2",
-                            "type": "PAGE"
+                            "submitOnChange": true,
+                            "options": [
+                                {
+                                    "id": "0",
+                                    "name": "Disable"
+                                },
+                                {
+                                    "id": "1",
+                                    "name": "Enable"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "parameter4Number",
+                            "required": false,
+                            "type": "NUMBER",
+                            "name": "Enum-Range Parameter",
+                            "description": "",
+                            "defaultValue": "10",
+                            "max": 99,
+                            "min": 2,
+                            "step": 1
+                        },
+                        {
+                            "id": "parameter4Default",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Reset parameter 4 to default",
+                            "description": "Update Parameter to 0",
+                            "defaultValue": "false",
+                            "submitOnChange": true
+                        }
+                    ]
+                },
+                {
+                    "name": "Boolean-Range Parameter 2",
+                    "settings": [
+                        {
+                            "id": "parameter5Boolean",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Boolean-Range Parameter 2",
+                            "description": "",
+                            "submitOnChange": true
+                        },
+                        {
+                            "id": "parameter5Number",
+                            "required": false,
+                            "type": "NUMBER",
+                            "name": "Boolean-Range Parameter 2",
+                            "description": "",
+                            "defaultValue": "10",
+                            "max": 99,
+                            "min": 1,
+                            "step": 1
+                        },
+                        {
+                            "id": "parameter5Default",
+                            "required": false,
+                            "type": "BOOLEAN",
+                            "name": "Reset parameter 5 to default",
+                            "description": "Update Parameter to 0",
+                            "defaultValue": "false",
+                            "submitOnChange": true
                         }
                     ]
                 },
                 {
                     "name": "Supported Command Classes",
-                    "hidden": true,
                     "hideable": true,
+                    "hidden": true,
                     "settings": [
                         {
                             "id": "SupportedCommandClassesCOMMAND_CLASS_APPLICATION_STATUS",
@@ -161,8 +248,8 @@
                 },
                 {
                     "name": "Controlled Command Classes",
-                    "hidden": true,
                     "hideable": true,
+                    "hidden": true,
                     "settings": [
                         {
                             "id": "ControlledCommandClassesCOMMAND_CLASS_BASIC_V2",
@@ -175,8 +262,8 @@
                 },
                 {
                     "name": "S2 Classes",
-                    "hidden": true,
                     "hideable": true,
+                    "hidden": true,
                     "settings": [
                         {
                             "id": "S2ClassesS2_AUTHENTICATED",
@@ -189,8 +276,8 @@
                 },
                 {
                     "name": "Features",
-                    "hidden": true,
                     "hideable": true,
+                    "hidden": true,
                     "settings": [
                         {
                             "id": "22",
@@ -202,16 +289,16 @@
                     ]
                 },
                 {
-                    "hidden": true,
-                    "hideable": true,
                     "name": "Texts",
+                    "hideable": true,
+                    "hidden": true,
                     "settings": [
                         {
-                            "description": "1. Follow the instructions for your Z-Wave certified controller to add a device to the Z-Wave network.\r\n2. Once the controller is ready to add your device, press and release the top or bottom of the wireless smart dimmer (rocker) to add it in the network.\r\nIf prompted by the controller to enter the S2 security code, refer to the QR code/security number on the back of the box, or the QR code label on the product.",
                             "id": "text32918",
-                            "name": "Inclusion",
                             "required": false,
-                            "type": "PARAGRAPH"
+                            "type": "PARAGRAPH",
+                            "name": "Inclusion",
+                            "description": "1. Follow the instructions for your Z-Wave certified controller to add a device to the Z-Wave network.\r\n2. Once the controller is ready to add your device, press and release the top or bottom of the wireless smart dimmer (rocker) to add it in the network.\r\nIf prompted by the controller to enter the S2 security code, refer to the QR code/security number on the back of the box, or the QR code label on the product."
                         }
                     ]
                 },
@@ -219,10 +306,10 @@
                     "name": "Manual",
                     "settings": [
                         {
-                            "description": "Manufacturer provided manual",
                             "id": "manual",
-                            "name": "Device Manual",
                             "type": "LINK",
+                            "name": "Device Manual",
+                            "description": "Manufacturer provided manual",
                             "url": "https://products.z-wavealliance.org/ProductManual/File?folder=&filename=MarketCertificationFiles/3600/39351 Binder.pdf"
                         }
                     ]

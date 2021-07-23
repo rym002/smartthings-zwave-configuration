@@ -1,25 +1,22 @@
 import { DeviceStateContext } from '@smartthings/smartapp'
-import { ManufacturerHex, ZwaveDevice } from './deviceInfo'
-import { mapValues } from 'lodash'
-import { DevicesEndpoint, SubscriptionsEndpoint, Status, ConfigEntry, Subscription, DeviceConfig, ConfigValueType } from '@smartthings/core-sdk'
+import { ZwaveDeviceInfo } from './deviceInfo'
+import { difference, mapValues } from 'lodash'
+import { DevicesEndpoint, SubscriptionsEndpoint, Status, ConfigEntry, DeviceConfig } from '@smartthings/core-sdk'
 
 interface Attribute<T> {
     value: T
     timestamp: string
 }
-export interface Manufacturer {
-    productTypeId: number
-    manufacturerId: number
-    productId: number
-}
 
-
-interface CurrentConfigurations {
+interface ZWaveKeyValue {
     [parameter: string]: number[]
 }
 
 interface ConvertedCurrentConfigurations {
     [parameter: string]: number
+}
+interface ConvertedAssociationGroups {
+    [parameter: string]: string[]
 }
 
 interface Command {
@@ -36,6 +33,9 @@ export class ZWaveDeviceState {
     constructor(readonly device: DeviceStateContext) {
 
     }
+    private toHex(value: number): string {
+        return value.toString(16).padStart(2, '0')
+    }
     private fromParameterValue(values: number[]): number {
         let ret = 0
         for (let index = 0; index < values.length; index++) {
@@ -44,36 +44,52 @@ export class ZWaveDeviceState {
         }
         return ret
     }
-    getCurrentConfigurations(): ConvertedCurrentConfigurations {
+
+    get capabilityState() {
         const capabilityState = this.device.state[ZWaveConfigurationCapability.CAPABILITY_ID]
         if (capabilityState) {
-            const currentConfigurations = <Attribute<CurrentConfigurations>><unknown>capabilityState.currentConfigurations
-            if (currentConfigurations) {
-                const currentConfigurationsValue = currentConfigurations.value
-                return mapValues(currentConfigurationsValue, (values) => {
-                    return this.fromParameterValue(values)
-                })
-            }
+            return capabilityState
         }
         throw new Error('Configuration Not Found')
     }
-
-    getManufacturerInfo(): Manufacturer {
-        const capabilityState = this.device.state[ZWaveConfigurationCapability.CAPABILITY_ID]
-        if (capabilityState) {
-            const manufacturerState = <Attribute<Manufacturer>><unknown>capabilityState.manufacturer
-            if (manufacturerState) {
-                const manufacturerValue = manufacturerState.value
-                return manufacturerValue
-            }
+    get currentConfigurations(): ConvertedCurrentConfigurations {
+        const capabilityState = this.capabilityState
+        const currentConfigurations = <Attribute<ZWaveKeyValue>><unknown>capabilityState.currentConfigurations
+        if (currentConfigurations) {
+            const currentConfigurationsValue = currentConfigurations.value
+            return mapValues(currentConfigurationsValue, (values) => {
+                return this.fromParameterValue(values)
+            })
         }
-        throw new Error('Manufacturer Not Found')
+        throw new Error('Current Configurations Not Found')
+    }
+    get associations(): ConvertedAssociationGroups {
+        const capabilityState = this.capabilityState
+        const associations = <Attribute<ZWaveKeyValue>><unknown>capabilityState.associations
+        if (associations) {
+            const currentConfigurationsValue = associations.value
+            return mapValues(currentConfigurationsValue, (values) => {
+                return values.map(value => {
+                    return this.toHex(value)
+                })
+            })
+        }
+        throw new Error('Associations Not Found')
+    }
+
+    get deviceNetworkId(): string {
+        const capabilityState = this.capabilityState
+        const deviceNetworkId = <Attribute<string>><unknown>capabilityState.deviceNetworkId
+        if (deviceNetworkId) {
+            return deviceNetworkId.value
+        }
+        throw new Error('Device Network Id Not Found')
     }
 }
 export class ZWaveConfigurationCapability {
     static CAPABILITY_ID = 'benchlocket65304.zwaveConfiguration'
     private readonly deviceConfig: DeviceConfig
-    constructor(readonly deviceConfigEntry: ConfigEntry[], readonly devicesEndpoint: DevicesEndpoint, readonly subscriptionsEndpoint: SubscriptionsEndpoint, readonly zwDevice: ZwaveDevice) {
+    constructor(readonly deviceConfigEntry: ConfigEntry[], readonly devicesEndpoint: DevicesEndpoint, readonly subscriptionsEndpoint: SubscriptionsEndpoint, readonly zwDevice: ZwaveDeviceInfo) {
         if (deviceConfigEntry && deviceConfigEntry[0].deviceConfig) {
             this.deviceConfig = deviceConfigEntry[0].deviceConfig
         } else {
@@ -91,15 +107,6 @@ export class ZWaveConfigurationCapability {
         }
         return ret
     }
-    private static toPaddedHex(value: number): string {
-        return '0x' + value.toString(16).padStart(4, '0')
-    }
-    async refreshManufacturer(): Promise<Status> {
-        const command: Command = {
-            command: 'refreshManufacturer'
-        }
-        return this.executeCommand(command)
-    }
     async supportedConfigurations(): Promise<Status> {
         const zwInfo = await this.zwDevice.deviceInfo()
         const parameters = zwInfo.ConfigurationParameters.map(cp => cp.ParameterNumber)
@@ -107,7 +114,7 @@ export class ZWaveConfigurationCapability {
             command: 'supportedConfigurations',
             args: [parameters]
         }
-        return this.executeCommand(command)
+        return await this.executeCommand(command)
     }
     async updateConfiguration(parameterNumber: number, defaultValue: boolean, value?: number, size?: number): Promise<Status> {
         let configurationValue: number[] = []
@@ -121,6 +128,24 @@ export class ZWaveConfigurationCapability {
         return this.executeCommand(command)
     }
 
+    private fromHex(value: string): number {
+        return parseInt(value, 16)
+    }
+
+    async updateAssociation(groupId: number, destinationNodes: string[], currentNodes: string[]) {
+        const nodesToAdd = difference(destinationNodes, currentNodes)
+            .map(node => this.fromHex(node))
+        const nodesToRemove = difference(currentNodes, destinationNodes)
+            .map(node => this.fromHex(node))
+            .filter(nodeId => nodeId != 1)
+        const command: Command = {
+            command: 'updateAssociation',
+            args: [groupId, nodesToAdd, nodesToRemove]
+        }
+        return this.executeCommand(command)
+
+    }
+
     private async executeCommand(command: Command): Promise<Status> {
         return await this.devicesEndpoint.executeCommand(this.deviceConfig.deviceId, {
             capability: ZWaveConfigurationCapability.CAPABILITY_ID,
@@ -128,13 +153,5 @@ export class ZWaveConfigurationCapability {
             command: command.command,
             arguments: command.args
         })
-    }
-
-    static toManufacturerHex(manufacturer: Manufacturer): ManufacturerHex {
-        return {
-            manufacturerId: this.toPaddedHex(manufacturer.manufacturerId),
-            productId: this.toPaddedHex(manufacturer.productId),
-            productTypeId: this.toPaddedHex(manufacturer.productTypeId)
-        }
     }
 }

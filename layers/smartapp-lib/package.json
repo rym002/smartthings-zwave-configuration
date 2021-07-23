@@ -22,8 +22,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@smartthings/dynamodb-context-store": "^2.1.0",
-    "@smartthings/smartapp": "^2.5.3"
+    "@smartthings/dynamodb-context-store": "^2.1.1",
+    "@smartthings/smartapp": "^2.5.4"
   },
   "devDependencies": {
     "mkdirp": "^1.0.4",

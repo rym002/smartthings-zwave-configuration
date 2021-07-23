@@ -1,0 +1,216 @@
+{
+    "statusCode": 200,
+    "configurationData": {
+        "page": {
+            "name": "Z-Wave Device Configuration",
+            "complete": true,
+            "pageId": "deviceMain",
+            "nextPageId": null,
+            "previousPageId": null,
+            "sections": [
+                {
+                    "name": "Z-Wave Device",
+                    "settings": [
+                        {
+                            "id": "selectedZwaveDevice",
+                            "required": true,
+                            "type": "DEVICE",
+                            "name": "Selected Device",
+                            "description": "Tap to set",
+                            "disabled": true,
+                            "multiple": false,
+                            "capabilities": [
+                                "benchlocket65304.zwaveConfiguration"
+                            ],
+                            "permissions": [
+                                "r",
+                                "x"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "Device Summary",
+                    "settings": [
+                        {
+                            "id": "device",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "No Configuration Device",
+                            "description": "Honeywell In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. "
+                        }
+                    ]
+                },
+                {
+                    "name": "Device Detail",
+                    "hideable": true,
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "detailName",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "No Configuration Device",
+                            "description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!"
+                        },
+                        {
+                            "id": "deviceImage",
+                            "required": false,
+                            "type": "IMAGE",
+                            "name": "No Configuration Device",
+                            "description": "No Configuration Device",
+                            "image": "https://products.z-wavealliance.org/ProductImages/ProductImage?prod=13600&which=21"
+                        }
+                    ]
+                },
+                {
+                    "name": "Association Groups",
+                    "hideable": true,
+                    "settings": [
+                        {
+                            "id": "associationGroupInstructions",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Association Groups",
+                            "description": "Pairs devices to allow automation without a hub"
+                        }
+                    ]
+                },
+                {
+                    "name": "Association Group 1",
+                    "settings": [
+                        {
+                            "description": "Lifeline only",
+                            "id": "associationGroup1Info",
+                            "name": "Association Group: 1",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        }
+                    ]
+                },
+                {
+                    "name": "Association Group 2",
+                    "settings": [
+                        {
+                            "description": "",
+                            "id": "associationGroup2Instructions",
+                            "name": "Select up to 5 Nodes",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        },
+                        {
+                            "capabilities": [
+                                "benchlocket65304.zwaveConfiguration"
+                            ],
+                            "description": "Multiple associations",
+                            "id": "associationGroup2Associations",
+                            "multiple": true,
+                            "name": "Configurable Group",
+                            "permissions": [
+                                "r"
+                            ],
+                            "required": false,
+                            "type": "DEVICE"
+                        },
+                        {
+                            "description": "1C",
+                            "id": "associationGroup2CurrentNodes",
+                            "name": "Associated Nodes",
+                            "required": false,
+                            "type": "PARAGRAPH"
+                        }
+                    ]
+                },
+                {
+                    "name": "Supported Command Classes",
+                    "hideable": true,
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "SupportedCommandClassesCOMMAND_CLASS_APPLICATION_STATUS",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Application Status",
+                            "description": "COMMAND_CLASS_APPLICATION_STATUS"
+                        },
+                        {
+                            "id": "SupportedCommandClassesCOMMAND_CLASS_BASIC_V2",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Basic V2",
+                            "description": "COMMAND_CLASS_BASIC_V2"
+                        }
+                    ]
+                },
+                {
+                    "name": "Controlled Command Classes",
+                    "hideable": true,
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "ControlledCommandClassesCOMMAND_CLASS_BASIC_V2",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Basic V2",
+                            "description": "COMMAND_CLASS_BASIC_V2"
+                        }
+                    ]
+                },
+                {
+                    "name": "S2 Classes",
+                    "hideable": true,
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "S2ClassesS2_AUTHENTICATED",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "S2 Authenticated",
+                            "description": "S2_AUTHENTICATED"
+                        }
+                    ]
+                },
+                {
+                    "name": "Features",
+                    "hideable": true,
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "22",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Firmware Updatable",
+                            "description": "Indicates whether the firmware can be updated and whether it is done by the consumer or a technician."
+                        }
+                    ]
+                },
+                {
+                    "name": "Texts",
+                    "hideable": true,
+                    "hidden": true,
+                    "settings": [
+                        {
+                            "id": "text32918",
+                            "required": false,
+                            "type": "PARAGRAPH",
+                            "name": "Inclusion",
+                            "description": "1. Follow the instructions for your Z-Wave certified controller to add a device to the Z-Wave network.\r\n2. Once the controller is ready to add your device, press and release the top or bottom of the wireless smart dimmer (rocker) to add it in the network.\r\nIf prompted by the controller to enter the S2 security code, refer to the QR code/security number on the back of the box, or the QR code label on the product."
+                        }
+                    ]
+                },
+                {
+                    "name": "Manual",
+                    "settings": [
+                        {
+                            "id": "manual",
+                            "type": "LINK",
+                            "name": "Device Manual",
+                            "description": "Manufacturer provided manual",
+                            "url": "https://products.z-wavealliance.org/ProductManual/File?folder=&filename=MarketCertificationFiles/3600/39351 Binder.pdf"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

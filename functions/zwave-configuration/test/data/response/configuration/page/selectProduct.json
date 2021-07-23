@@ -27,21 +27,21 @@
                             "type": "DEVICE"
                         },
                         {
-                            "description": "0x4944",
+                            "description": "4944",
                             "id": "productTypeId",
                             "name": "Product Type Id",
                             "required": false,
                             "type": "PARAGRAPH"
                         },
                         {
-                            "description": "0x0039",
+                            "description": "0039",
                             "id": "manufacturerId",
                             "name": "Manufacturer Id",
                             "required": false,
                             "type": "PARAGRAPH"
                         },
                         {
-                            "description": "0x3235",
+                            "description": "3235",
                             "id": "productId",
                             "name": "Product Id",
                             "required": false,

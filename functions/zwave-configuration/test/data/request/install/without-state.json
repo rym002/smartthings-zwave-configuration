@@ -1,5 +1,5 @@
 {
-    "lifecycle": "UPDATE",
+    "lifecycle": "INSTALL",
     "executionId": "00000000-0000-0000-0000-000000000000",
     "appId": "myAppId",
     "locale": "en",
@@ -13,7 +13,7 @@
         "supportedTemplates": [],
         "samsungAccountId": ""
     },
-    "updateData": {
+    "installData": {
         "authToken": "authToken",
         "refreshToken": "refreshToken",
         "installedApp": {
@@ -28,14 +28,6 @@
                             "componentId": "main"
                         }
                     }
-                ],
-                "zwaveProductId": [
-                    {
-                        "valueType": "STRING",
-                        "stringConfig": {
-                            "value": "3600"
-                        }
-                    }
                 ]
             },
             "permissions": [
@@ -43,17 +35,6 @@
                 "x:devices:00000000-0000-0000-0000-000000000000"
             ]
         }
-    },
-    "previousConfig": {
-        "selectedZwaveDevice": [
-            {
-                "valueType": "DEVICE",
-                "deviceConfig": {
-                    "deviceId": "myDeviceId",
-                    "componentId": "main"
-                }
-            }
-        ]
     },
     "settings": {}
 }

@@ -1,6 +1,6 @@
 {
-  "Id": 3600,
-  "Name": "In-Wall Smart Dimmer",
+  "Id": 33600,
+  "Name": "No Supported Command Classes",
   "Description": "In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. Revolutionary QuickFit design features a housing depth that is up to 20 percent smaller than the previous Z-Wave models. This reduced size coupled with the elimination of heat taps provides a better fit in older style boxes and multi-gang configurations. SimpleWire technology allows line and load to automatically be configured with auto-sensing line-load terminals. All of this is coupled with Z-Wave S2 and Smart Start allows for effortless installation while being safer than ever!",
   "Description_Short": "Honeywell In-Wall Smart Dimmer with QuickFit and SimpleWire enhancements. ",
   "Brand": "Honeywell",
@@ -28,14 +28,6 @@
     "Dimming Lighting Devices"
   ],
   "SupportedCommandClasses": [
-    {
-      "Name": "Application Status",
-      "Identifier": "COMMAND_CLASS_APPLICATION_STATUS"
-    },
-    {
-      "Name": "Basic V2",
-      "Identifier": "COMMAND_CLASS_BASIC_V2"
-    }
   ],
   "ControlledCommandClasses": [
     {

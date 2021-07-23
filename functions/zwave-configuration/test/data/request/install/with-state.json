@@ -17,7 +17,7 @@
         "authToken": "authToken",
         "refreshToken": "refreshToken",
         "installedApp": {
-            "installedAppId": "myInstalledAppId",
+            "installedAppId": "installedAppIdWithProduct",
             "locationId": "myLocationId",
             "config": {
                 "selectedZwaveDevice": [

@@ -14,6 +14,7 @@ interface ContextStoreFull<T> extends ContextStore {
     get(installedAppId: string): Promise<ContextRecordWithState<T>>
     update(installedAppId: string, contextRecord: Partial<ContextRecordWithState<T>>): Promise<void>
     delete(installedAppId: string): Promise<void>
+	put(contextRecord: ContextRecordWithState<T>): Promise<ContextRecordWithState<T>>
 }
 
 interface DynamoContextStoreFull extends ContextStore {
